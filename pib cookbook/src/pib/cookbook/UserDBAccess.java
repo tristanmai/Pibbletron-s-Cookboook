@@ -8,7 +8,7 @@ import java.sql.SQLIntegrityConstraintViolationException;
 
 public class UserDBAccess
 {
-  public void insertUser(String username, String password)
+  public boolean insertUser(String username, String password)
   {
     String sql = "INSERT INTO Users (Username, Password) VALUES (?, ?)";
     
@@ -20,15 +20,18 @@ public class UserDBAccess
       
       ps.executeUpdate();
       System.out.println("user created: " + username);
+      return true;
     }
     catch(SQLIntegrityConstraintViolationException e)
     {
       System.out.println("This user already exists.");
+      return false;
     }
     catch(SQLException e)
     {
       System.out.println("Error creating user.");
       e.printStackTrace();
+      return false;
     }
   }
   
