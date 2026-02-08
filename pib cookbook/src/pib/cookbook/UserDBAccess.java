@@ -35,7 +35,7 @@ public class UserDBAccess
     }
   }
   
-  public boolean login(String username, String password)
+  public int login(String username, String password)
   {
     String sql = "SELECT * FROM Users WHERE Username = ? AND Password = ?";
     
@@ -46,14 +46,18 @@ public class UserDBAccess
       ps.setString(2, password);
       
       ResultSet rs = ps.executeQuery();
-      return rs.next(); //this will return true if user exists
+      
+      if(rs.next())
+      {
+        return rs.getInt("UserID");
+      }
     }
     catch(SQLException e)
     {
       System.out.println("Error checking login data");
       e.printStackTrace();
-      return false;
     }
+    return -1;
   }
   
   public void viewAllUsers()
@@ -129,7 +133,7 @@ public class UserDBAccess
     
     userDB.viewAllUsers();
     
-    boolean loginSuccess = userDB.login("Tristan", "pibblenator123");
+    int loginSuccess = userDB.login("Tristan", "pibblenator123");
     System.out.println("Login success: " + loginSuccess);
     
     userDB.updatePassword(2, "joojoojoo123");

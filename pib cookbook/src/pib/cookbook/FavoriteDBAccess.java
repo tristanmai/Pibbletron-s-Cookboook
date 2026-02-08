@@ -4,6 +4,7 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.ArrayList;
 
 public class FavoriteDBAccess
 {
@@ -77,6 +78,55 @@ public class FavoriteDBAccess
       System.out.println("error retrieving favorites");
       e.printStackTrace();
     }
+  }
+  
+  public ArrayList<Recipe> getFavorites(int userID)
+  {
+    ArrayList<Recipe> recipes = new ArrayList<>();
+    
+    String sql = "SELECT r.RecipeID, r.RecipeName " + 
+      "FROM Favorite f " + 
+      "JOIN Recipe r " + 
+      "ON f.RecipeID = r.RecipeID " + 
+      "WHERE f.UserID = ?";
+      
+    try (Connection conn = DBManager.getDBConnection();
+      PreparedStatement ps = conn.prepareStatement(sql))
+    {
+      ps.setInt(1, userID);
+      ResultSet rs = ps.executeQuery();
+      
+      while(rs.next())
+      {
+        recipes.add(new Recipe(rs.getInt("RecipeID"),rs.getString("RecipeName")));
+      }
+    }
+    catch (SQLException e)
+    {
+      e.printStackTrace();
+    }
+    
+    return recipes;
+  }
+  
+  public boolean isFavorite(int userID, int recipeID)
+  {
+    String sql = "SELECT 1 FROM Favorite WHERE UserID = ? AND RecipeID = ?";
+    
+    try (Connection conn = DBManager.getDBConnection();
+      PreparedStatement ps = conn.prepareStatement(sql))
+    {
+      ps.setInt(1, userID);
+      ps.setInt(2, recipeID);
+      
+      ResultSet rs = ps.executeQuery();
+      return rs.next(); //true is a row exists
+    }
+    catch(SQLException e)
+    {
+      e.printStackTrace();
+    }
+    return false;
   }
   
   public static void main(String[] args)

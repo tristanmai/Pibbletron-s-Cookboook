@@ -125,15 +125,15 @@ public class LoginGUI extends JFrame implements ActionListener
       String username = usernameField.getText();
       String password = new String(passwordField.getPassword());
 
-      boolean success = userDB.login(username, password);
+      int success = userDB.login(username, password);
 
       //if returns tru then the login worked
-      if (success)
+      if (success != -1)
       {
         this.dispose();
         //show a pop up box of success
         JOptionPane.showMessageDialog(null, "Login successful!");
-        //new HomePage(userID).setVisible(true);
+        new HomePageGUI(success).setVisible(true);
       }
       else
       {
