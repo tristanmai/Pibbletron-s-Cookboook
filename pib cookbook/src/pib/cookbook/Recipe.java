@@ -1,14 +1,23 @@
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
- */
 package pib.cookbook;
 
-/**
- *
- * @author gadgetx
- */
 public class Recipe
 {
+  private int recipeID;
+  private String recipeName;
   
+  public Recipe(int recipeID, String recipeName)
+  {
+    this.recipeID = recipeID;
+    this.recipeName = recipeName;
+  }
+  
+  public int getRecipeID()
+  {
+    return recipeID;
+  }
+  
+  public String getRecipeName()
+  {
+    return recipeName;
+  }
 }
