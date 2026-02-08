@@ -5,6 +5,7 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.SQLIntegrityConstraintViolationException;
+import java.util.ArrayList;
 
 public class IngredientDBAccess
 {
@@ -105,6 +106,50 @@ public class IngredientDBAccess
       System.out.println("error deleting ingreidnet");
       e.printStackTrace();
     }
+  }
+  
+  public ArrayList<Ingredient> getAllIngredients()
+  {
+    ArrayList<Ingredient> ingredients = new ArrayList<>();
+    String sql = "SELECT IngredientID, IngredientName FROM Ingredient";
+    
+    try (Connection conn = DBManager.getDBConnection();
+      PreparedStatement ps = conn.prepareStatement(sql);
+      ResultSet rs = ps.executeQuery())
+    {
+      while(rs.next())
+      {
+        ingredients.add(new Ingredient(rs.getInt("IngredientID"), rs.getString("IngredientName")));
+      }
+    }
+    catch (SQLException e)
+    {
+      e.printStackTrace();
+    }
+    return ingredients;
+  }
+  
+  public ArrayList<Ingredient> searchIngredients(String word)
+  {
+    ArrayList<Ingredient> ingredients = new ArrayList<>();
+    String sql = "SELECT IngredientID, IngredientName FROM Ingredient WHERE IngredientName LIKE ?";
+    
+    try (Connection conn = DBManager.getDBConnection();
+      PreparedStatement ps = conn.prepareStatement(sql))
+    {
+      ps.setString(1, "%" + word + "%");
+      ResultSet rs = ps.executeQuery();
+      
+      while(rs.next())
+      {
+        ingredients.add(new Ingredient(rs.getInt("IngredientID"), rs.getString("IngredientName")));
+      }
+    }
+    catch(SQLException e)
+    {
+      e.printStackTrace();
+    }
+    return ingredients;
   }
 
   public static void main(String[] args)
