@@ -5,6 +5,7 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.SQLIntegrityConstraintViolationException;
+import java.util.ArrayList;
 
 public class RecipeDBAccess
 {
@@ -114,17 +115,84 @@ public class RecipeDBAccess
     }
   }
   
+  public ArrayList<Recipe> getAllRecipes()
+  {
+    ArrayList<Recipe> recipes = new ArrayList<>();
+    String sql = "SELECT RecipeID, RecipeName FROM Recipe";
+    
+    try (Connection conn = DBManager.getDBConnection();
+      PreparedStatement ps = conn.prepareStatement(sql);
+      ResultSet rs = ps.executeQuery())
+    {
+      while(rs.next())
+      {
+        recipes.add(new Recipe(rs.getInt("RecipeID"), rs.getString("RecipeName")));
+      }
+    }
+    catch (SQLException e)
+    {
+      e.printStackTrace();
+    }
+    return recipes;
+  }
+  
+  public ArrayList<Recipe> getRecipesSorted()
+  {
+    ArrayList<Recipe> recipes = new ArrayList<>();
+    String sql = "SELECT RecipeID, RecipeName FROM Recipe ORDER BY CookingTime ASC";
+    
+    try (Connection conn = DBManager.getDBConnection();
+      PreparedStatement ps = conn.prepareStatement(sql);
+      ResultSet rs = ps.executeQuery())
+    {
+      while(rs.next())
+      {
+        recipes.add(new Recipe(rs.getInt("RecipeID"), rs.getString("RecipeName")));
+      }
+    }
+    catch(SQLException e)
+    {
+      e.printStackTrace();
+    }
+    return recipes;
+  }
+  
+  public ArrayList<Recipe> searchRecipes(String word)
+  {
+    ArrayList<Recipe> recipes = new ArrayList<>();
+    String sql = "SELECT RecipeID, RecipeName FROM Recipe WHERE RecipeName LIKE ?";
+    
+    try (Connection conn = DBManager.getDBConnection();
+      PreparedStatement ps = conn.prepareStatement(sql))
+    {
+      ps.setString(1, "%" + word + "%");
+      ResultSet rs = ps.executeQuery();
+      
+      while(rs.next())
+      {
+        recipes.add(new Recipe(rs.getInt("RecipeID"), rs.getString("RecipeName")));
+      }
+    }
+    catch(SQLException e)
+    {
+      e.printStackTrace();
+    }
+    return recipes;
+  }
+  
   public static void main(String[] args)
   {
     RecipeDBAccess recipeDB = new RecipeDBAccess();
     
-    recipeDB.insertRecipe("Pho", "Step 1: Boil Broth\nStep 2: Add nooodles", "A yummy vietnamese soup", 30);
-    recipeDB.insertRecipe("Chicken Salad", "Step 1: Chop chicken\nStep 2: Mix with brocolli", "A nutritious chicken salad", 15);
-    
-    recipeDB.viewAllRecipes();
-    
-    recipeDB.deleteRecipe(1);
-    
-    recipeDB.viewAllRecipes();
+//    recipeDB.insertRecipe("Pho", "Step 1: Boil Broth\nStep 2: Add nooodles", "A yummy vietnamese soup", 30);
+//    recipeDB.insertRecipe("Chicken Salad", "Step 1: Chop chicken\nStep 2: Mix with brocolli", "A nutritious chicken salad", 15);
+//    
+//    recipeDB.viewAllRecipes();
+//    
+//    recipeDB.deleteRecipe(1);
+//    
+//    recipeDB.viewAllRecipes();
+
+    recipeDB.insertRecipe("Pizza", "Step 1: Make dough\nStep 2: Add toppings\nStep3: Bake", "A yummy pizza", 25);
   }
 }

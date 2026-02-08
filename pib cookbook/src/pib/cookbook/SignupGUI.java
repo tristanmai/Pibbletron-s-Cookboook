@@ -17,7 +17,6 @@ import javax.swing.JPanel;
 import javax.swing.JPasswordField;
 import javax.swing.JTextField;
 import static javax.swing.WindowConstants.EXIT_ON_CLOSE;
-import jdk.nashorn.api.tree.BreakTree;
 
 public class SignupGUI extends JFrame implements ActionListener
 {
@@ -116,7 +115,7 @@ public class SignupGUI extends JFrame implements ActionListener
 
     buttonPanel.add(signupButton);
 
-    //add panel to center and buttons to the bottom
+    //add panel to center and button to the bottom
     background.add(panel, BorderLayout.CENTER);
     background.add(buttonPanel, BorderLayout.SOUTH);
   }
