@@ -56,7 +56,7 @@ public class HomePageGUI extends JFrame implements ActionListener
     logoutButton.addActionListener(this);
     logoutButton.setForeground(BROWN);
     logoutButton.setBackground(BEIGE_COLOR);
-    JLabel titleLabel = new JLabel("       Pib's Recipe Book");
+    JLabel titleLabel = new JLabel("         Pib's Recipe Book");
     titleLabel.setFont(new Font("SansSerif", Font.BOLD, 30));
     titleLabel.setForeground(BROWN);
 
@@ -260,7 +260,7 @@ public class HomePageGUI extends JFrame implements ActionListener
     else if (command.equals("Ingredients Page"))
     {
       this.dispose();
-      new IngredientsGUI(currentUserID).setVisible(true);
+      new IngredientsListGUI(currentUserID).setVisible(true);
     }
     else if (command.startsWith("FAV_"))
     {

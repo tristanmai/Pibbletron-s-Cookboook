@@ -20,14 +20,14 @@ import static javax.swing.WindowConstants.EXIT_ON_CLOSE;
 import static pib.cookbook.LoginGUI.BROWN;
 import static pib.cookbook.SignupGUI.BEIGE_COLOR;
 
-public class IngredientsGUI extends JFrame implements ActionListener
+public class IngredientsListGUI extends JFrame implements ActionListener
 {
   private JTextField searchField;
   private JPanel ingredientListPanel;
   private IngredientDBAccess ingredientDB = new IngredientDBAccess();
   private static int currentUserID;
   
-  public IngredientsGUI(int userID)
+  public IngredientsListGUI(int userID)
   {
     super("Ingredients Page");
     this.setBounds(100, 200, 600, 800);
@@ -49,15 +49,15 @@ public class IngredientsGUI extends JFrame implements ActionListener
     //header
     JPanel headerPanel = new JPanel(new BorderLayout());
     headerPanel.setOpaque(false);
-    JButton logoutButton = new JButton("Back");
-    logoutButton.addActionListener(this);
-    logoutButton.setForeground(BROWN);
-    logoutButton.setBackground(BEIGE_COLOR);
+    JButton backButton = new JButton("Back");
+    backButton.addActionListener(this);
+    backButton.setForeground(BROWN);
+    backButton.setBackground(BEIGE_COLOR);
     JLabel titleLabel = new JLabel("         Pib's Ingredients");
     titleLabel.setFont(new Font("SansSerif", Font.BOLD, 30));
     titleLabel.setForeground(BROWN);
     
-    headerPanel.add(logoutButton, BorderLayout.WEST);
+    headerPanel.add(backButton, BorderLayout.WEST);
     headerPanel.add(titleLabel, BorderLayout.CENTER);
     
     JPanel searchPanel = new JPanel(new BorderLayout(10, 5));
@@ -188,11 +188,11 @@ public class IngredientsGUI extends JFrame implements ActionListener
     else if (command.equals("Create Ingredient"))
     {
       this.dispose();
-      //new CreateIngredientGUI().setVisible(true);
+      new CreateIngredientGUI(currentUserID).setVisible(true);
     }
   }
   public static void main(String[] args)
   {
-    new IngredientsGUI(currentUserID).setVisible(true);
+    new IngredientsListGUI(currentUserID).setVisible(true);
   }
 }
