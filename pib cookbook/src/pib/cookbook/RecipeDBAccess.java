@@ -202,6 +202,33 @@ public class RecipeDBAccess
     return -1;
   }
   
+  public Recipe getRecipeByID(int recipeID)
+  {
+    String sql = "SELECT * FROM Recipe WHERE RecipeID = ?";
+    
+    try (Connection conn = DBManager.getDBConnection();
+      PreparedStatement ps = conn.prepareStatement(sql))
+    {
+      ps.setInt(1, recipeID);
+      ResultSet rs = ps.executeQuery();
+      
+      if(rs.next())
+      {
+        return new Recipe(
+          rs.getInt("RecipeID"), 
+          rs.getString("RecipeName"), 
+          rs.getString("Instructions"),
+          rs.getString("Description"), 
+          rs.getInt("CookingTime"));
+      }
+    }
+    catch(SQLException e)
+    {
+      e.printStackTrace();
+    }
+    return null;
+  }
+  
   public static void main(String[] args)
   {
     RecipeDBAccess recipeDB = new RecipeDBAccess();

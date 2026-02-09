@@ -26,7 +26,7 @@ public class HomePageGUI extends JFrame implements ActionListener
   private RecipeDBAccess recipeDB = new RecipeDBAccess();
   private JTextField searchField;
   private FavoriteDBAccess favDB = new FavoriteDBAccess();
-  private static int currentUserID;
+  private int currentUserID;
 
   public HomePageGUI(int userID)
   {
@@ -239,7 +239,7 @@ public class HomePageGUI extends JFrame implements ActionListener
     else if (command.startsWith("VIEW_"))
     {
       int recipeID = Integer.parseInt(command.substring(5));
-      //new RecipeGUI(recipeID).setVisible(true);
+      new RecipePageGUI(recipeID, currentUserID).setVisible(true);
     }
     else if (command.startsWith("EDIT_"))
     {
@@ -255,7 +255,7 @@ public class HomePageGUI extends JFrame implements ActionListener
     else if (command.equals("Create Recipe"))
     {
       this.dispose();
-      //new CreateRecipeGUI().setVisible(true);
+      new CreateRecipeGUI(currentUserID).setVisible(true);
     }
     else if (command.equals("Ingredients Page"))
     {
@@ -279,6 +279,6 @@ public class HomePageGUI extends JFrame implements ActionListener
 
   public static void main(String[] args)
   {
-    new HomePageGUI(currentUserID).setVisible(true);
+    new HomePageGUI(5).setVisible(true);
   }
 }

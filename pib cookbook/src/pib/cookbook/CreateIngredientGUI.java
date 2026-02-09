@@ -20,7 +20,7 @@ import static pib.cookbook.SignupGUI.BEIGE_COLOR;
 
 public class CreateIngredientGUI extends JFrame implements ActionListener
 {
-  private static int currentUserID;
+  private int currentUserID;
   private JTextField nameField;
   private JTextField proteinField;
   private JTextField carbsField;
@@ -182,6 +182,6 @@ public class CreateIngredientGUI extends JFrame implements ActionListener
   }
   public static void main(String[] args)
   {
-    new CreateIngredientGUI(currentUserID).setVisible(true);
+    new CreateIngredientGUI(5).setVisible(true);
   }
 }

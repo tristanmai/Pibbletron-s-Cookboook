@@ -5,6 +5,7 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.SQLIntegrityConstraintViolationException;
+import java.util.ArrayList;
 
 public class RecipeIngredientDBAccess
 {
@@ -149,6 +150,32 @@ public class RecipeIngredientDBAccess
       totalProtein, totalCarbs, totalFats, totalCalories
     };//manually input the total macros after calculating. i can then use this array to get protein, carb, fat, and calories
     return totalMacros;
+  }
+  public ArrayList<String> getIngredientDisplay(int recipeID)
+  {
+    ArrayList<String> list = new ArrayList<>();
+    
+    String sql = "SELECT i.IngredientName, ri.Weight " +
+    "FROM RecipeIngredient ri " +
+    "JOIN Ingredient i ON ri.IngredientID = i.IngredientID " +
+    "WHERE ri.RecipeID = ?";
+    
+    try (Connection conn = DBManager.getDBConnection(); 
+      PreparedStatement ps = conn.prepareStatement(sql))
+    {
+      ps.setInt(1, recipeID);
+      ResultSet rs = ps.executeQuery();
+      
+      while(rs.next())
+        {
+          list.add(rs.getString("IngredientName") + " - " + rs.getDouble("Weight") + " g");
+        }
+    }
+    catch(SQLException e)
+    {
+      e.printStackTrace();
+    }
+    return list;
   }
 
   public static void main(String[] args)

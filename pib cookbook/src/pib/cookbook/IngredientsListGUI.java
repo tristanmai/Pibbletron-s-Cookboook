@@ -25,7 +25,7 @@ public class IngredientsListGUI extends JFrame implements ActionListener
   private JTextField searchField;
   private JPanel ingredientListPanel;
   private IngredientDBAccess ingredientDB = new IngredientDBAccess();
-  private static int currentUserID;
+  private int currentUserID;
   
   public IngredientsListGUI(int userID)
   {
@@ -193,6 +193,6 @@ public class IngredientsListGUI extends JFrame implements ActionListener
   }
   public static void main(String[] args)
   {
-    new IngredientsListGUI(currentUserID).setVisible(true);
+    new IngredientsListGUI(5).setVisible(true);
   }
 }
