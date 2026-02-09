@@ -185,7 +185,7 @@ public class IngredientsListGUI extends JFrame implements ActionListener
       ingredientDB.deleteINgredient(ingredientID);
       displayIngredients(ingredientDB.getAllIngredients());
     }
-    else if (command.equals("Create Ingredient"))
+    else if (command.equals("New Ingredient"))
     {
       this.dispose();
       new CreateIngredientGUI(currentUserID).setVisible(true);

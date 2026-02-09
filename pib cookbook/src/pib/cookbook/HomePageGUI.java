@@ -244,7 +244,7 @@ public class HomePageGUI extends JFrame implements ActionListener
     else if (command.startsWith("EDIT_"))
     {
       int recipeID = Integer.parseInt(command.substring(5));
-      //new EditRecipeGUI(recipeID).setVisible(true);
+      new EditRecipeGUI(recipeID, currentUserID).setVisible(true);
     }
     else if (command.startsWith("DELETE_"))
     {
