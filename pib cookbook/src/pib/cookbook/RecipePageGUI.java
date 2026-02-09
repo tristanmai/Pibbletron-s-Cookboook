@@ -18,6 +18,7 @@ import static pib.cookbook.SignupGUI.BEIGE_COLOR;
 
 public class RecipePageGUI extends JFrame implements ActionListener
 {
+  //connect to dbaccess'
   private RecipeDBAccess recipeDB = new RecipeDBAccess();
   private RecipeIngredientDBAccess riDB = new RecipeIngredientDBAccess();
   private int currentUserID;
@@ -52,6 +53,7 @@ public class RecipePageGUI extends JFrame implements ActionListener
     back.setBackground(BEIGE_COLOR);
     back.setForeground(BROWN);
     
+    //title with the recipe name
     JLabel titleLabel = new JLabel("          " + recipe.getRecipeName());
     titleLabel.setFont(new Font("SansSerif", Font.BOLD, 30));
     titleLabel.setForeground(BROWN);
@@ -60,12 +62,15 @@ public class RecipePageGUI extends JFrame implements ActionListener
     header.add(titleLabel, BorderLayout.CENTER);
     background.add(header, BorderLayout.NORTH);
     
+    //main section
     JPanel content = new JPanel();
     content.setOpaque(true);
     content.setBackground(BEIGE_COLOR);
     content.setLayout(new BoxLayout(content, BoxLayout.Y_AXIS));
     
+    //spacing
     content.add(Box.createVerticalStrut(20));
+    //add info
     content.add(new JLabel("Description: " + recipe.getDescription()));
     content.add(new JLabel("Instructions: " + recipe.getInstructions()));
     content.add(new JLabel("Cooking Time: " + recipe.getCookTime() + "minutes"));
@@ -78,6 +83,7 @@ public class RecipePageGUI extends JFrame implements ActionListener
     
     ArrayList<String> ingredients = riDB.getIngredientDisplay(recipeID);
     
+    //add list of ingredients
     for(String s : ingredients)
     {
       JLabel ing = new JLabel("- " + s);
@@ -86,6 +92,7 @@ public class RecipePageGUI extends JFrame implements ActionListener
       content.add(ing);
     }
     
+    //scroll bar if there r a lot of ingredients
     JScrollPane scroll = new JScrollPane(content);
     scroll.setOpaque(false);
     background.add(scroll, BorderLayout.CENTER);
