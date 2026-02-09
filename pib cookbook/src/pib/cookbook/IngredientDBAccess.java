@@ -67,17 +67,18 @@ public class IngredientDBAccess
   }
 
   //updates existing ingredients and their macro values. identified using its primary key
-  public void updateIngredient(int ingredientID, double protein, double carbs, double fats, double calories)
+  public void updateIngredient(int ingredientID, String name, double protein, double carbs, double fats, double calories)
   {
-    String sql = "UPDATE Ingredient SET ProteinPer100g = ?, CarbsPer100g = ?, FatsPer100g = ?, CaloriesPer100g = ? WHERE IngredientID = ?";
+    String sql = "UPDATE Ingredient SET IngredientName = ?, ProteinPer100g = ?, CarbsPer100g = ?, FatsPer100g = ?, CaloriesPer100g = ? WHERE IngredientID = ?";
 
     try (Connection conn = DBManager.getDBConnection(); PreparedStatement ps = conn.prepareStatement(sql))
     {
-      ps.setDouble(1, protein);
-      ps.setDouble(2, carbs);
-      ps.setDouble(3, fats);
-      ps.setDouble(4, calories);
-      ps.setInt(5, ingredientID);
+      ps.setString(1, name);
+      ps.setDouble(2, protein);
+      ps.setDouble(3, carbs);
+      ps.setDouble(4, fats);
+      ps.setDouble(5, calories);
+      ps.setInt(6, ingredientID);
 
       int rows = ps.executeUpdate();
       System.out.println("ingredients updated: " + rows);
@@ -150,6 +151,34 @@ public class IngredientDBAccess
       e.printStackTrace();
     }
     return ingredients;
+  }
+  
+  public Ingredient getIngredientInfo(int ingredientID)
+  {
+    String sql = "SELECT * FROM Ingredient WHERE IngredientID = ?";
+    
+    try (Connection conn = DBManager.getDBConnection();
+      PreparedStatement ps = conn.prepareStatement(sql))
+    {
+      ps.setInt(1, ingredientID);
+      ResultSet rs = ps.executeQuery();
+      
+      if(rs.next())
+      {
+        return new Ingredient(
+          rs.getInt("IngredientID"), 
+        rs.getString("IngredientName"), 
+        rs.getInt("ProteinPer100g"), 
+        rs.getInt("CarbsPer100g"), 
+        rs.getInt("FatsPer100g"), 
+        rs.getInt("CaloriesPer100g"));
+      }
+    }
+    catch(SQLException e)
+    {
+      e.printStackTrace();
+    }
+    return null;
   }
 
   public static void main(String[] args)
