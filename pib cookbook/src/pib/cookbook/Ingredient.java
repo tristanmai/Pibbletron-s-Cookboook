@@ -50,4 +50,8 @@ public class Ingredient
   {
     return calories;
   }
+  public String toString()
+  {
+    return ingredientName;
+  }
 }

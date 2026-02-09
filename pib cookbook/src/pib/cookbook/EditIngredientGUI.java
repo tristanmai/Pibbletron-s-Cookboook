@@ -111,6 +111,7 @@ public class EditIngredientGUI extends JFrame implements ActionListener
     calsRow.add(calsField);
     calsRow.add(calsPer);
 
+    //addfing to info panel
     infoPanel.add(Box.createVerticalStrut(60));
     infoPanel.add(nameRow);
     infoPanel.add(proteinRow);
@@ -136,6 +137,7 @@ public class EditIngredientGUI extends JFrame implements ActionListener
     loadIngredientInfo();
   }
   
+  //load up ingredients old info
   private void loadIngredientInfo()
   {
     Ingredient ing = ingredientDB.getIngredientInfo(ingredientID);

@@ -180,6 +180,28 @@ public class RecipeDBAccess
     return recipes;
   }
   
+  public int getRecipeID(String recipeName)
+  {
+    String sql = "SELECT RecipeID FROM Recipe WHERE RecipeName = ?";
+    
+    try (Connection conn = DBManager.getDBConnection();
+      PreparedStatement ps = conn.prepareStatement(sql))
+    {
+      ps.setString(1, recipeName);
+      ResultSet rs = ps.executeQuery();
+      
+      if(rs.next())
+      {
+        return rs.getInt("RecipeID");
+      }
+    }
+    catch(SQLException e)
+    {
+      e.printStackTrace();
+    }
+    return -1;
+  }
+  
   public static void main(String[] args)
   {
     RecipeDBAccess recipeDB = new RecipeDBAccess();
