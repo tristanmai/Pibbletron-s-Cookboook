@@ -37,7 +37,7 @@ public class SignupGUI extends JFrame implements ActionListener
   {
     //title of page and set its bounds and set it to close when i exit the program
     super("signup Page");
-    this.setBounds(100, 200, 600, 800);
+    this.setBounds(400, 100, 600, 800);
     this.setDefaultCloseOperation(EXIT_ON_CLOSE);
 
     userDB = new UserDBAccess();

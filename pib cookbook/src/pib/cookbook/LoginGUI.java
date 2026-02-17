@@ -37,7 +37,7 @@ public class LoginGUI extends JFrame implements ActionListener
   {
     //title of page and set its bounds and set it to close when i exit the program
     super("Login Page");
-    this.setBounds(100, 200, 600, 800);
+    this.setBounds(410, 100, 600, 800);
     this.setDefaultCloseOperation(EXIT_ON_CLOSE);
 
     userDB = new UserDBAccess();
@@ -130,9 +130,9 @@ public class LoginGUI extends JFrame implements ActionListener
       //if returns tru then the login worked
       if (success != -1)
       {
-        this.dispose();
         //show a pop up box of success
         JOptionPane.showMessageDialog(null, "Login successful!");
+        this.dispose();
         new HomePageGUI(success).setVisible(true);
       }
       else

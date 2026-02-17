@@ -27,7 +27,7 @@ public class RecipePageGUI extends JFrame implements ActionListener
   public RecipePageGUI(int recipeID, int userID)
   {
     super("Recipe Page");
-    this.setBounds(100, 200, 600, 800);
+    this.setBounds(400, 100, 600, 800);
     this.setDefaultCloseOperation(EXIT_ON_CLOSE);
     this.setLayout(new BorderLayout());
     
