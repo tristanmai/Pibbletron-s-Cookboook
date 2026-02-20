@@ -31,7 +31,7 @@ public class HomePageGUI extends JFrame implements ActionListener
   public HomePageGUI(int userID)
   {
     super("Recipe Book Home");
-    this.setBounds(400, 100, 600, 800);
+    this.setBounds(410, 100, 600, 800);
     this.setDefaultCloseOperation(EXIT_ON_CLOSE);
     this.setLayout(new BorderLayout());
     

@@ -31,7 +31,7 @@ public class CreateIngredientGUI extends JFrame implements ActionListener
   public CreateIngredientGUI(int userID)
   {
     super("Create Ingredients Page");
-    this.setBounds(400, 100, 600, 800);
+    this.setBounds(410, 100, 600, 800);
     this.setDefaultCloseOperation(EXIT_ON_CLOSE);
     this.setLayout(new BorderLayout());
     
