@@ -24,6 +24,7 @@ public class HomePageGUI extends JFrame implements ActionListener
 
   private JPanel recipeListPanel;
   private RecipeDBAccess recipeDB = new RecipeDBAccess();
+  private RecipeIngredientDBAccess recipeIngredientDB = new RecipeIngredientDBAccess();
   private JTextField searchField;
   private FavoriteDBAccess favDB = new FavoriteDBAccess();
   private int currentUserID;
@@ -34,7 +35,7 @@ public class HomePageGUI extends JFrame implements ActionListener
     this.setBounds(410, 100, 600, 800);
     this.setDefaultCloseOperation(EXIT_ON_CLOSE);
     this.setLayout(new BorderLayout());
-    
+
     this.currentUserID = userID;
 
     //background
@@ -211,6 +212,35 @@ public class HomePageGUI extends JFrame implements ActionListener
     recipeListPanel.repaint();
   }
 
+  private void displayRecipes(ArrayList<Recipe> recipes, ArrayList<Recipe> recipes2)
+  {
+    recipeListPanel.removeAll();
+
+    //uses the addreciperow method to go thru all recipes and add them all
+    for (Recipe r : recipes)
+    {
+      //add each row with correct arguemtns
+      addRecipeRow(r.getRecipeID(), r.getRecipeName());
+      //add spaxing between rows
+      recipeListPanel.add(Box.createVerticalStrut(5));
+    }
+    for (Recipe r2 : recipes2)
+    {
+      for (Recipe r : recipes)
+      {
+        if (!r.equals(r2))
+        {
+          addRecipeRow(r2.getRecipeID(), r2.getRecipeName());
+          recipeListPanel.add(Box.createVerticalStrut(5));
+        }
+      }
+    }
+
+    //updating the page
+    recipeListPanel.revalidate();
+    recipeListPanel.repaint();
+  }
+
   public void actionPerformed(ActionEvent e)
   {
     String command = e.getActionCommand();
@@ -234,7 +264,7 @@ public class HomePageGUI extends JFrame implements ActionListener
     }
     else if (command.equals("Search"))
     {
-      displayRecipes(recipeDB.searchRecipes(searchField.getText()));
+      displayRecipes(recipeDB.searchRecipes(searchField.getText()), recipeIngredientDB.searchIngredientsInRecipe(searchField.getText()));
     }
     else if (command.startsWith("VIEW_"))
     {
@@ -265,7 +295,7 @@ public class HomePageGUI extends JFrame implements ActionListener
     else if (command.startsWith("FAV_"))
     {
       int recipeID = Integer.parseInt(command.substring(4));
-      if(favDB.isFavorite(currentUserID, recipeID))
+      if (favDB.isFavorite(currentUserID, recipeID))
       {
         favDB.removeFavorite(currentUserID, recipeID);
       }

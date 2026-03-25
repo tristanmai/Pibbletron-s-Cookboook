@@ -13,6 +13,10 @@ public class Recipe
     this.recipeID = recipeID;
     this.recipeName = recipeName;
   }
+  public Recipe(int recipeID)
+  {
+    this.recipeID = recipeID;
+  }
   public Recipe(int recipeID, String recipeName, String instructions, String description, int cookingTime)
   {
     this.recipeID = recipeID;

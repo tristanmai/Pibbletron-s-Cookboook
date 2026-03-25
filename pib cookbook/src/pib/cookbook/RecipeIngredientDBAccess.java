@@ -151,31 +151,114 @@ public class RecipeIngredientDBAccess
     };//manually input the total macros after calculating. i can then use this array to get protein, carb, fat, and calories
     return totalMacros;
   }
+
   public ArrayList<String> getIngredientDisplay(int recipeID)
   {
     ArrayList<String> list = new ArrayList<>();
-    
-    String sql = "SELECT i.IngredientName, ri.Weight " +
-    "FROM RecipeIngredient ri " +
-    "JOIN Ingredient i ON ri.IngredientID = i.IngredientID " +
-    "WHERE ri.RecipeID = ?";
-    
-    try (Connection conn = DBManager.getDBConnection(); 
-      PreparedStatement ps = conn.prepareStatement(sql))
+
+    String sql = "SELECT i.IngredientName, ri.Weight "
+      + "FROM RecipeIngredient ri "
+      + "JOIN Ingredient i ON ri.IngredientID = i.IngredientID "
+      + "WHERE ri.RecipeID = ?";
+
+    try (Connection conn = DBManager.getDBConnection(); PreparedStatement ps = conn.prepareStatement(sql))
     {
       ps.setInt(1, recipeID);
       ResultSet rs = ps.executeQuery();
-      
-      while(rs.next())
-        {
-          list.add(rs.getString("IngredientName") + " - " + rs.getDouble("Weight") + " g");
-        }
+
+      while (rs.next())
+      {
+        list.add(rs.getString("IngredientName") + " - " + rs.getDouble("Weight") + " g");
+      }
     }
-    catch(SQLException e)
+    catch (SQLException e)
     {
       e.printStackTrace();
     }
     return list;
+  }
+
+  public ArrayList<Recipe> searchIngredientsInRecipe(String word)
+  {
+    ArrayList<Integer> ingredients = new ArrayList<>();
+    String sql0 = "SELECT IngredientID FROM Ingredient WHERE IngredientName LIKE ?";
+
+    try (Connection conn = DBManager.getDBConnection(); PreparedStatement ps = conn.prepareStatement(sql0))
+    {
+      ps.setString(1, "%" + word + "%");
+      ResultSet rs = ps.executeQuery();
+
+      while (rs.next())
+      {
+        ingredients.add(rs.getInt("IngredientID"));
+      }
+    }
+    catch (SQLException e)
+    {
+      e.printStackTrace();
+    }
+
+    ArrayList<Integer> recipesIDs = new ArrayList<>();
+    String sql1 = "SELECT RecipeID FROM RecipeIngredient WHERE IngredientID LIKE ?";
+
+    try (Connection conn = DBManager.getDBConnection(); PreparedStatement ps = conn.prepareStatement(sql1))
+    {
+      for (int t = 0; t < ingredients.size(); t++)
+      {
+        ps.setString(1, String.valueOf(ingredients.get(t)));
+        ResultSet rs = ps.executeQuery();
+
+        while (rs.next())
+        {
+          boolean duplicate = false;
+          for (int j = 0; j < recipesIDs.size(); j++)
+          {
+            if (rs.getInt("RecipeID") == recipesIDs.get(j))
+            {
+              duplicate = true;
+            }
+          }
+          recipesIDs.add(rs.getInt("RecipeID"));
+        }
+      }
+    }
+    catch (SQLException e)
+    {
+      e.printStackTrace();
+    }
+
+    ArrayList<Recipe> recipes = new ArrayList<>();
+    String sql2 = "SELECT RecipeID, RecipeName FROM Recipe WHERE RecipeID LIKE ?";
+
+    try (Connection conn = DBManager.getDBConnection(); PreparedStatement ps = conn.prepareStatement(sql2))
+    {
+      for (int i = 0; i < recipesIDs.size(); i++)
+      {
+        ps.setString(1, "%" + recipesIDs.get(i) + "%");
+        ResultSet rs = ps.executeQuery();
+
+        while (rs.next())
+        {
+          boolean duplicate = false;
+          for (int j = 0; j < recipes.size(); j++)
+          {
+            if (rs.getInt("RecipeID") == recipes.get(j).getRecipeID())
+            {
+              duplicate = true;
+            }
+          }
+          if (!duplicate)
+          {
+            recipes.add(new Recipe(rs.getInt("RecipeID"), rs.getString("RecipeName")));
+          }
+        }
+      }
+    }
+    catch (SQLException e)
+    {
+      e.printStackTrace();
+    }
+    return recipes;
   }
 
   public static void main(String[] args)
@@ -193,7 +276,6 @@ public class RecipeIngredientDBAccess
 //    riDB.updateIngredientWeight(2, 1, 75);
 //
 //    riDB.deleteIngredientFromRecipe(2, 4);
-
     riDB.viewAllIngredientsForRecipe(2);
 
     double[] macros = riDB.calculateRecipeMacros(2);
