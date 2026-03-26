@@ -11,6 +11,7 @@ import javax.swing.BorderFactory;
 import javax.swing.Box;
 import javax.swing.BoxLayout;
 import javax.swing.JButton;
+import javax.swing.JComboBox;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
@@ -27,6 +28,7 @@ public class HomePageGUI extends JFrame implements ActionListener
   private RecipeIngredientDBAccess recipeIngredientDB = new RecipeIngredientDBAccess();
   private JTextField searchField;
   private FavoriteDBAccess favDB = new FavoriteDBAccess();
+  JComboBox<String> drop;
   private int currentUserID;
 
   public HomePageGUI(int userID)
@@ -87,17 +89,22 @@ public class HomePageGUI extends JFrame implements ActionListener
     sortPanel.add(favSortButton);
 
     //search
-    JPanel searchPanel = new JPanel(new BorderLayout(10, 5));
+    JPanel searchPanel = new JPanel(new BorderLayout(7, 5));
     searchPanel.setOpaque(false);
-    searchField = new JTextField(40);
+    searchField = new JTextField(33);
     JButton searchButton = new JButton("Search");
     searchButton.setForeground(BROWN);
     searchButton.setBackground(BEIGE_COLOR);
     searchButton.addActionListener(this);
+    
+    String[] options = {"All", "Recipe Name", "Ingredients Used"};
+    drop = new JComboBox<>(options);
+    drop.setPreferredSize(new Dimension(5, 10));
 
-    searchPanel.setBorder(BorderFactory.createEmptyBorder(5, 20, 5, 20));
+    searchPanel.setBorder(BorderFactory.createEmptyBorder(5, 9, 5, 11));
     searchPanel.add(searchButton, BorderLayout.WEST);
-    searchPanel.add(searchField, BorderLayout.CENTER);
+    searchPanel.add(drop);
+    searchPanel.add(searchField, BorderLayout.EAST);
 
     topContainer.add(headerPanel);
     topContainer.add(sortPanel);
@@ -264,7 +271,20 @@ public class HomePageGUI extends JFrame implements ActionListener
     }
     else if (command.equals("Search"))
     {
-      displayRecipes(recipeDB.searchRecipes(searchField.getText()), recipeIngredientDB.searchIngredientsInRecipe(searchField.getText()));
+      String option = (String) drop.getSelectedItem();
+      
+      if(option.equals("All"))
+      {
+        displayRecipes(recipeDB.searchRecipes(searchField.getText()), recipeIngredientDB.searchIngredientsInRecipe(searchField.getText()));
+      }
+      else if(option.equals("Recipe Name"))
+      {
+        displayRecipes(recipeDB.searchRecipes(searchField.getText()));
+      }
+      else if(option.equals("Ingredients Used"))
+      {
+        displayRecipes(recipeIngredientDB.searchIngredientsInRecipe(searchField.getText()));
+      }
     }
     else if (command.startsWith("VIEW_"))
     {
