@@ -163,7 +163,7 @@ public class EditRecipeGUI extends JFrame implements ActionListener
   private void loadIngredients()
   {
     ingredientDropdown.removeAllItems();
-    ArrayList<Ingredient> ingredients = ingredientDB.getAllIngredients();
+    ArrayList<Ingredient> ingredients = ingredientDB.getAllIngredients(currentUserID);
     
     for(Ingredient i : ingredients)
     {
@@ -189,7 +189,7 @@ public class EditRecipeGUI extends JFrame implements ActionListener
         String instr = instructionsArea.getText();
         int cookTime = Integer.parseInt(timeField.getText());
         
-        recipeDB.updateRecipe(recipeID, instr, desc, cookTime);
+        recipeDB.updateRecipe(recipeID, instr, desc, cookTime, currentUserID);
         currentRecipeID = recipeDB.getRecipeID(nameField.getText());
       }
       catch(NumberFormatException ex)

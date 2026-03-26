@@ -140,7 +140,7 @@ public class EditIngredientGUI extends JFrame implements ActionListener
   //load up ingredients old info
   private void loadIngredientInfo()
   {
-    Ingredient ing = ingredientDB.getIngredientInfo(ingredientID);
+    Ingredient ing = ingredientDB.getIngredientInfo(ingredientID, currentUserID);
     if(ing != null)
     {
       nameField.setText(ing.getIngredientName());
@@ -184,7 +184,7 @@ public class EditIngredientGUI extends JFrame implements ActionListener
         double fats = Double.parseDouble(fatsText);
         double cals = Double.parseDouble(calsText);
         
-        ingredientDB.updateIngredient(ingredientID, name2, protein, carbs, fats, cals);
+        ingredientDB.updateIngredient(ingredientID, name2, protein, carbs, fats, cals, currentUserID);
         
         JOptionPane.showMessageDialog(null, "Ingredient Updated");
       }

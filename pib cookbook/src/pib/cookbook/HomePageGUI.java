@@ -117,7 +117,7 @@ public class HomePageGUI extends JFrame implements ActionListener
     recipeListPanel.setBackground(BEIGE_COLOR);
     recipeListPanel.setLayout(new BoxLayout(recipeListPanel, BoxLayout.Y_AXIS));
 
-    displayRecipes(recipeDB.getAllRecipes());
+    displayRecipes(recipeDB.getAllRecipes(currentUserID));
 
     JScrollPane scrollPanel = new JScrollPane(recipeListPanel);
     scrollPanel.setOpaque(false);
@@ -259,11 +259,11 @@ public class HomePageGUI extends JFrame implements ActionListener
     }
     else if (command.equals("Recent"))
     {
-      displayRecipes(recipeDB.getAllRecipes());
+      displayRecipes(recipeDB.getAllRecipes(currentUserID));
     }
     else if (command.equals("Cook Time"))
     {
-      displayRecipes(recipeDB.getRecipesSorted());
+      displayRecipes(recipeDB.getRecipesSorted(currentUserID));
     }
     else if (command.equals("Favorites"))
     {
@@ -275,15 +275,15 @@ public class HomePageGUI extends JFrame implements ActionListener
       
       if(option.equals("All"))
       {
-        displayRecipes(recipeDB.searchRecipes(searchField.getText()), recipeIngredientDB.searchIngredientsInRecipe(searchField.getText()));
+        displayRecipes(recipeDB.searchRecipes(searchField.getText(), currentUserID), recipeIngredientDB.searchIngredientsInRecipe(searchField.getText(), currentUserID));
       }
       else if(option.equals("Recipe Name"))
       {
-        displayRecipes(recipeDB.searchRecipes(searchField.getText()));
+        displayRecipes(recipeDB.searchRecipes(searchField.getText(), currentUserID));
       }
       else if(option.equals("Ingredients Used"))
       {
-        displayRecipes(recipeIngredientDB.searchIngredientsInRecipe(searchField.getText()));
+        displayRecipes(recipeIngredientDB.searchIngredientsInRecipe(searchField.getText(), currentUserID));
       }
     }
     else if (command.startsWith("VIEW_"))
@@ -299,8 +299,8 @@ public class HomePageGUI extends JFrame implements ActionListener
     else if (command.startsWith("DELETE_"))
     {
       int recipeID = Integer.parseInt(command.substring(7));
-      recipeDB.deleteRecipe(recipeID);
-      displayRecipes(recipeDB.getAllRecipes());
+      recipeDB.deleteRecipe(recipeID, currentUserID);
+      displayRecipes(recipeDB.getAllRecipes(currentUserID));
     }
     else if (command.equals("Create Recipe"))
     {
@@ -323,7 +323,7 @@ public class HomePageGUI extends JFrame implements ActionListener
       {
         favDB.addFavorite(currentUserID, recipeID);
       }
-      displayRecipes(recipeDB.getAllRecipes());
+      displayRecipes(recipeDB.getAllRecipes(currentUserID));
     }
   }
 

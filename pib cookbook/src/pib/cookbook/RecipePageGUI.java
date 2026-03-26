@@ -41,7 +41,7 @@ public class RecipePageGUI extends JFrame implements ActionListener
     background.setOpaque(true);
     setContentPane(background);
     
-    Recipe recipe = recipeDB.getRecipeByID(recipeID);
+    Recipe recipe = recipeDB.getRecipeByID(recipeID, currentUserID);
     
     //header
     JPanel header = new JPanel(new BorderLayout());
@@ -81,7 +81,7 @@ public class RecipePageGUI extends JFrame implements ActionListener
     content.add(Box.createVerticalStrut(20));
     content.add(ingLabel);
     
-    ArrayList<String> ingredients = riDB.getIngredientDisplay(recipeID);
+    ArrayList<String> ingredients = riDB.getIngredientDisplay(recipeID, currentUserID);
     
     //add list of ingredients
     for(String s : ingredients)

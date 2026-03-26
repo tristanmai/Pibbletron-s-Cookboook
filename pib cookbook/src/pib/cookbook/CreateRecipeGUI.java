@@ -163,7 +163,7 @@ public class CreateRecipeGUI extends JFrame implements ActionListener
   private void loadIngredients()
   {
     ingredientDropdown.removeAllItems();
-    ArrayList<Ingredient> ingredients = ingredientDB.getAllIngredients();
+    ArrayList<Ingredient> ingredients = ingredientDB.getAllIngredients(currentUserID);
     
     for(Ingredient i : ingredients)
     {
@@ -191,7 +191,7 @@ public class CreateRecipeGUI extends JFrame implements ActionListener
       //insert the recipe into db
       try
       {
-        recipeDB.insertRecipe(nameField.getText(), instructionsArea.getText(), descriptionArea.getText(), Integer.parseInt(timeField.getText()));
+        recipeDB.insertRecipe(nameField.getText(), instructionsArea.getText(), descriptionArea.getText(), Integer.parseInt(timeField.getText()), currentUserID);
       
         JOptionPane.showMessageDialog(null, "Recipe Created. Now add ingredients!");
         

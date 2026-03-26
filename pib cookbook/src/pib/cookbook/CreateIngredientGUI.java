@@ -163,7 +163,7 @@ public class CreateIngredientGUI extends JFrame implements ActionListener
         double fats = Double.parseDouble(fatsText);
         double cals = Double.parseDouble(calsText);
         
-        ingredientDB.insertIngredient(name, protein, carbs, fats, cals);
+        ingredientDB.insertIngredient(name, protein, carbs, fats, cals, currentUserID);
         
         JOptionPane.showMessageDialog(null, "Ingredient Created");
         

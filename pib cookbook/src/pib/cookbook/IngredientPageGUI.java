@@ -27,7 +27,7 @@ public class IngredientPageGUI extends JFrame implements ActionListener
     this.setLayout(new BorderLayout());
     
     this.currentUserID = userID;
-    Ingredient ingredient = ingredientDB.getIngredientInfo(ingredientID);
+    Ingredient ingredient = ingredientDB.getIngredientInfo(ingredientID, currentUserID);
 
     //background
     JLabel background = new JLabel();

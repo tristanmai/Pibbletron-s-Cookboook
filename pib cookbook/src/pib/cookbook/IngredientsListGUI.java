@@ -81,7 +81,7 @@ public class IngredientsListGUI extends JFrame implements ActionListener
     ingredientListPanel.setBackground(BEIGE_COLOR);
     ingredientListPanel.setLayout(new BoxLayout(ingredientListPanel, BoxLayout.Y_AXIS));
 
-    displayIngredients(ingredientDB.getAllIngredients());
+    displayIngredients(ingredientDB.getAllIngredients(currentUserID));
 
     JScrollPane scrollPanel = new JScrollPane(ingredientListPanel);
     scrollPanel.setOpaque(false);
@@ -167,7 +167,7 @@ public class IngredientsListGUI extends JFrame implements ActionListener
     }
     else if (command.equals("Search"))
     {
-      displayIngredients(ingredientDB.searchIngredients(searchField.getText()));
+      displayIngredients(ingredientDB.searchIngredients(searchField.getText(), currentUserID));
     }
     else if (command.startsWith("VIEW_"))
     {
@@ -182,8 +182,8 @@ public class IngredientsListGUI extends JFrame implements ActionListener
     else if (command.startsWith("DELETE_"))
     {
       int ingredientID = Integer.parseInt(command.substring(7));
-      ingredientDB.deleteINgredient(ingredientID);
-      displayIngredients(ingredientDB.getAllIngredients());
+      ingredientDB.deleteINgredient(ingredientID, currentUserID);
+      displayIngredients(ingredientDB.getAllIngredients(currentUserID));
     }
     else if (command.equals("New Ingredient"))
     {

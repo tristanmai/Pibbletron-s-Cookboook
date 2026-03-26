@@ -8,6 +8,7 @@ public class Ingredient
   private int carbs;
   private int fats;
   private int calories;
+  private int userID;
   
   public Ingredient(int ingredientID, String ingredientName)
   {
@@ -15,7 +16,7 @@ public class Ingredient
     this.ingredientName = ingredientName;
   }
   
-  public Ingredient(int ingredientID, String ingredientName, int protein, int carbs, int fats, int calories)
+  public Ingredient(int ingredientID, String ingredientName, int protein, int carbs, int fats, int calories, int userID)
   {
     this.ingredientID = ingredientID;
     this.ingredientName = ingredientName;
@@ -23,6 +24,7 @@ public class Ingredient
     this.carbs = carbs;
     this.fats = fats;
     this.calories = calories;
+    this.userID = userID;
   }
   
   public int getIngredientID()

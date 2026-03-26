@@ -9,12 +9,13 @@ import java.util.ArrayList;
 
 public class RecipeDBAccess
 {
+
   //inserts a recipe into the database
-  public void insertRecipe(String name, String instructions, String description, int cookingTime)
+  public void insertRecipe(String name, String instructions, String description, int cookingTime, int userID)
   {
     //the attributes it is inserting into
-    String sql = "INSERT INTO Recipe (RecipeName, Instructions, Description, CookingTime)"
-      + "VALUES (?, ?, ?, ?)";
+    String sql = "INSERT INTO Recipe (RecipeName, Instructions, Description, CookingTime, UserID)"
+      + "VALUES (?, ?, ?, ?, ?)";
 
     //connectingf to the db
     try (Connection conn = DBManager.getDBConnection(); PreparedStatement ps = conn.prepareStatement(sql))
@@ -23,6 +24,7 @@ public class RecipeDBAccess
       ps.setString(2, instructions);
       ps.setString(3, description);
       ps.setInt(4, cookingTime);
+      ps.setInt(5, userID);
 
       ps.executeUpdate();
       System.out.println("Recipe inserted: " + name);
@@ -65,25 +67,25 @@ public class RecipeDBAccess
       e.printStackTrace();
     }
   }
-  
+
   //updates the existing recipes by getting its recipe id and the updated version
-  public void updateRecipe(int recipeID, String instructions, String description, int cookingTime)
+  public void updateRecipe(int recipeID, String instructions, String description, int cookingTime, int userID)
   {
     //uses sql update clause and finding the recipe its recipe id
     String sql = "UPDATE Recipe SET "
       + "Instructions = ?,"
       + "Description = ?, "
-      + "CookingTime = ? WHERE RecipeID = ?";
-    
-    try (Connection conn = DBManager.getDBConnection();
-      PreparedStatement ps = conn.prepareStatement(sql))
+      + "CookingTime = ? WHERE RecipeID = ? AND userID = ?";
+
+    try (Connection conn = DBManager.getDBConnection(); PreparedStatement ps = conn.prepareStatement(sql))
     {
       //recieves the values for the cells i want to update
       ps.setString(1, instructions);
       ps.setString(2, description);
       ps.setInt(3, cookingTime);
       ps.setInt(4, recipeID);
-      
+      ps.setInt(5, userID);
+
       int rows = ps.executeUpdate();
       System.out.println("Recipes updates: " + rows);
     }
@@ -93,19 +95,19 @@ public class RecipeDBAccess
       e.printStackTrace();
     }
   }
-  
+
   //deletes a recipe
-  public void deleteRecipe(int recipeID)
+  public void deleteRecipe(int recipeID, int userID)
   {
     //uses delete from clause and searchuing by its recipeid
-    String sql = "DELETE FROM Recipe WHERE RecipeID = ?";
-    
-    try (Connection conn = DBManager.getDBConnection();
-      PreparedStatement ps = conn.prepareStatement(sql))
+    String sql = "DELETE FROM Recipe WHERE RecipeID = ? AND UserID = ?";
+
+    try (Connection conn = DBManager.getDBConnection(); PreparedStatement ps = conn.prepareStatement(sql))
     {
       ps.setInt(1, recipeID);
+      ps.setInt(2, userID);
       ps.executeUpdate();
-      
+
       System.out.println("redipe deleted: ID " + recipeID);
     }
     catch (SQLException e)
@@ -114,17 +116,18 @@ public class RecipeDBAccess
       e.printStackTrace();
     }
   }
-  
-  public ArrayList<Recipe> getAllRecipes()
+
+  public ArrayList<Recipe> getAllRecipes(int userID)
   {
     ArrayList<Recipe> recipes = new ArrayList<>();
-    String sql = "SELECT RecipeID, RecipeName FROM Recipe";
-    
-    try (Connection conn = DBManager.getDBConnection();
-      PreparedStatement ps = conn.prepareStatement(sql);
-      ResultSet rs = ps.executeQuery())
+    String sql = "SELECT RecipeID, RecipeName FROM Recipe WHERE UserID = ?";
+
+    try (Connection conn = DBManager.getDBConnection(); PreparedStatement ps = conn.prepareStatement(sql))
     {
-      while(rs.next())
+      ps.setInt(1, userID);
+
+      ResultSet rs = ps.executeQuery();
+      while (rs.next())
       {
         recipes.add(new Recipe(rs.getInt("RecipeID"), rs.getString("RecipeName")));
       }
@@ -135,104 +138,105 @@ public class RecipeDBAccess
     }
     return recipes;
   }
-  
-  public ArrayList<Recipe> getRecipesSorted()
+
+  public ArrayList<Recipe> getRecipesSorted(int userID)
   {
     ArrayList<Recipe> recipes = new ArrayList<>();
-    String sql = "SELECT RecipeID, RecipeName FROM Recipe ORDER BY CookingTime ASC";
-    
-    try (Connection conn = DBManager.getDBConnection();
-      PreparedStatement ps = conn.prepareStatement(sql);
-      ResultSet rs = ps.executeQuery())
+    String sql = "SELECT RecipeID, RecipeName FROM Recipe WHERE UserID = ? ORDER BY CookingTime ASC";
+
+    try (Connection conn = DBManager.getDBConnection(); PreparedStatement ps = conn.prepareStatement(sql))
     {
-      while(rs.next())
+      ps.setInt(1, userID);
+
+      ResultSet rs = ps.executeQuery();
+      while (rs.next())
       {
         recipes.add(new Recipe(rs.getInt("RecipeID"), rs.getString("RecipeName")));
       }
     }
-    catch(SQLException e)
+    catch (SQLException e)
     {
       e.printStackTrace();
     }
     return recipes;
   }
-  
-  public ArrayList<Recipe> searchRecipes(String word)
+
+  public ArrayList<Recipe> searchRecipes(String word, int userID)
   {
     ArrayList<Recipe> recipes = new ArrayList<>();
-    String sql = "SELECT RecipeID, RecipeName FROM Recipe WHERE RecipeName LIKE ?";
-    
-    try (Connection conn = DBManager.getDBConnection();
-      PreparedStatement ps = conn.prepareStatement(sql))
+    String sql = "SELECT RecipeID, RecipeName FROM Recipe WHERE RecipeName LIKE ? AND UserID = ?";
+
+    try (Connection conn = DBManager.getDBConnection(); PreparedStatement ps = conn.prepareStatement(sql))
     {
       ps.setString(1, "%" + word + "%");
+      ps.setInt(2, userID);
       ResultSet rs = ps.executeQuery();
-      
-      while(rs.next())
+
+      while (rs.next())
       {
         recipes.add(new Recipe(rs.getInt("RecipeID"), rs.getString("RecipeName")));
       }
     }
-    catch(SQLException e)
+    catch (SQLException e)
     {
       e.printStackTrace();
     }
     return recipes;
   }
-  
+
   public int getRecipeID(String recipeName)
   {
     String sql = "SELECT RecipeID FROM Recipe WHERE RecipeName = ?";
-    
-    try (Connection conn = DBManager.getDBConnection();
-      PreparedStatement ps = conn.prepareStatement(sql))
+
+    try (Connection conn = DBManager.getDBConnection(); PreparedStatement ps = conn.prepareStatement(sql))
     {
       ps.setString(1, recipeName);
       ResultSet rs = ps.executeQuery();
-      
-      if(rs.next())
+
+      if (rs.next())
       {
         return rs.getInt("RecipeID");
       }
     }
-    catch(SQLException e)
+    catch (SQLException e)
     {
       e.printStackTrace();
     }
     return -1;
   }
-  
-  public Recipe getRecipeByID(int recipeID)
+
+  public Recipe getRecipeByID(int recipeID, int userID)
   {
-    String sql = "SELECT * FROM Recipe WHERE RecipeID = ?";
-    
-    try (Connection conn = DBManager.getDBConnection();
-      PreparedStatement ps = conn.prepareStatement(sql))
+    String sql = "SELECT * FROM Recipe WHERE RecipeID = ? AND UserID = ?";
+
+    try (Connection conn = DBManager.getDBConnection(); PreparedStatement ps = conn.prepareStatement(sql))
     {
       ps.setInt(1, recipeID);
+      ps.setInt(2, userID);
       ResultSet rs = ps.executeQuery();
-      
-      if(rs.next())
+
+      if (rs.next())
       {
         return new Recipe(
-          rs.getInt("RecipeID"), 
-          rs.getString("RecipeName"), 
+          rs.getInt("RecipeID"),
+          rs.getString("RecipeName"),
           rs.getString("Instructions"),
-          rs.getString("Description"), 
-          rs.getInt("CookingTime"));
+          rs.getString("Description"),
+          rs.getInt("CookingTime"),
+          rs.getInt("UserID"));
       }
     }
-    catch(SQLException e)
+    catch (SQLException e)
     {
       e.printStackTrace();
     }
     return null;
   }
-  
+
   public static void main(String[] args)
   {
     RecipeDBAccess recipeDB = new RecipeDBAccess();
-    
+
 //    recipeDB.insertRecipe("Pho", "Step 1: Boil Broth\nStep 2: Add nooodles", "A yummy vietnamese soup", 30);
 //    recipeDB.insertRecipe("Chicken Salad", "Step 1: Chop chicken\nStep 2: Mix with brocolli", "A nutritious chicken salad", 15);
 //    
@@ -241,7 +245,6 @@ public class RecipeDBAccess
 //    recipeDB.deleteRecipe(1);
 //    
 //    recipeDB.viewAllRecipes();
-
-    recipeDB.insertRecipe("Pizza", "Step 1: Make dough\nStep 2: Add toppings\nStep3: Bake", "A yummy pizza", 25);
+    //recipeDB.insertRecipe("Pizza", "Step 1: Make dough\nStep 2: Add toppings\nStep3: Bake", "A yummy pizza", 25);
   }
 }

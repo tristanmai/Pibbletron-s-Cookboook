@@ -7,6 +7,7 @@ public class Recipe
   private String instructions;
   private String description;
   private int cookingTime;
+  private int userID;
   
   public Recipe(int recipeID, String recipeName)
   {
@@ -17,13 +18,14 @@ public class Recipe
   {
     this.recipeID = recipeID;
   }
-  public Recipe(int recipeID, String recipeName, String instructions, String description, int cookingTime)
+  public Recipe(int recipeID, String recipeName, String instructions, String description, int cookingTime, int userID)
   {
     this.recipeID = recipeID;
     this.recipeName = recipeName;
     this.instructions = instructions;
     this.description = description;
     this.cookingTime = cookingTime;
+    this.userID = userID;
   }
   
   public int getRecipeID()

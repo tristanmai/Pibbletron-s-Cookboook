@@ -13,7 +13,7 @@ public class RecipeIngredientDBAccess
   //inserts an ingredient into a specific recipe with a specified weight for how much of that ingredient there is
   public void insertIngredientToRecipe(int recipeID, int ingredientID, double weight)
   {
-    String sql = "INSERT INTO RecipeIngredient (RecipeID, IngredientID, Weight) "
+    String sql = "INSERT INTO RecipeIngredient (RecipeID, IngredientID, WeightInGrams) "
       + "VALUES (?, ?, ?)";
 
     try (Connection conn = DBManager.getDBConnection(); PreparedStatement ps = conn.prepareStatement(sql))
@@ -38,7 +38,7 @@ public class RecipeIngredientDBAccess
 
   public void viewAllIngredientsForRecipe(int recipeID)
   {
-    String sql = "SELECT i.IngredientName, ri.Weight "
+    String sql = "SELECT i.IngredientName, ri.WeightInGrams "
       + "FROM RecipeIngredient ri " //the name to for recipeingredient is ri so i can acces its attributes with ri.
       + "JOIN Ingredient i " //the name i put for ingredient is i so when i access ingredients attributes i do i.
       + "ON ri.IngredientID = i.IngredientID " //i connect them by ingredient id in recipe ingredient and ingredient
@@ -52,7 +52,7 @@ public class RecipeIngredientDBAccess
       System.out.println("Ingredients for RecipeID " + recipeID + ":");
       while (rs.next())//since i do not know how many i have, the while loop lets me go thru all of it using the .next propety so it reads it all
       {
-        System.out.println(rs.getString("IngredientName") + " | " + rs.getDouble("Weight") + " g");
+        System.out.println(rs.getString("IngredientName") + " | " + rs.getDouble("WeightInGrams") + " g");
       }
     }
     catch (SQLException e)
@@ -66,7 +66,7 @@ public class RecipeIngredientDBAccess
   public void updateIngredientWeight(int recipeID, int ingredientID, double weight)
   {
     String sql = "UPDATE RecipeIngredient "
-      + "SET Weight = ? "
+      + "SET WeightInGrams = ? "
       + "WHERE RecipeId = ? "
       + "AND IngredientID = ?";
 
@@ -107,17 +107,17 @@ public class RecipeIngredientDBAccess
   }
 
   //this is an algorithm that i made to calculate the total macros of all ingredients in a recipe
-  public double[] calculateRecipeMacros(int recipeID)
+  public double[] calculateRecipeMacros(int recipeID, int userID)
   {
     String sql = "SELECT i.ProteinPer100g, "
       + "i.CarbsPer100g, "
       + "i.FatsPer100g, "
       + "i.CaloriesPer100g, "
-      + "ri.Weight "
+      + "ri.WeightInGrams "
       + "FROM RecipeIngredient ri " //again using ri for recipe ingredient
-      + "JOIN Ingredient i " //and i for ingredient
-      + "ON ri.IngredientID = i.IngredientID " //joined on ingredient id
-      + "WHERE ri.RecipeID = ?";
+      + "JOIN Ingredient i ON ri.IngredientID = i.IngredientID " //joined on ingredient id
+      + "JOIN Recipe r ON ri.RecipeID = r.RecipeID"
+      + "WHERE ri.RecipeID = ? AND UserID = ?";
 
     //initialize macros
     double totalProtein = 0;
@@ -128,11 +128,12 @@ public class RecipeIngredientDBAccess
     try (Connection conn = DBManager.getDBConnection(); PreparedStatement ps = conn.prepareStatement(sql))
     {
       ps.setInt(1, recipeID);
+      ps.setInt(2, userID);
       ResultSet rs = ps.executeQuery();
 
       while (rs.next())//use rs.next to go thru all the ingredients in the recipe
       {
-        double weightFactor = rs.getDouble("Weight") / 100; //since i put the macros in each ingredient by 100g, i div by 100 to get macros per 1g
+        double weightFactor = rs.getDouble("WeightInGrams") / 100; //since i put the macros in each ingredient by 100g, i div by 100 to get macros per 1g
         totalProtein += rs.getDouble("ProteinPer100g") * weightFactor;
         totalCarbs += rs.getDouble("CarbsPer100g") * weightFactor;
         totalFats += rs.getDouble("FatsPer100g") * weightFactor;
@@ -152,23 +153,25 @@ public class RecipeIngredientDBAccess
     return totalMacros;
   }
 
-  public ArrayList<String> getIngredientDisplay(int recipeID)
+  public ArrayList<String> getIngredientDisplay(int recipeID, int userID)
   {
     ArrayList<String> list = new ArrayList<>();
 
-    String sql = "SELECT i.IngredientName, ri.Weight "
+    String sql = "SELECT i.IngredientName, ri.WeightInGrams "
       + "FROM RecipeIngredient ri "
       + "JOIN Ingredient i ON ri.IngredientID = i.IngredientID "
-      + "WHERE ri.RecipeID = ?";
+      + "JOIN Recipe r ON ri.RecipeID = r.RecipeID"
+      + "WHERE ri.RecipeID = ? AND r.UserID = ?";
 
     try (Connection conn = DBManager.getDBConnection(); PreparedStatement ps = conn.prepareStatement(sql))
     {
       ps.setInt(1, recipeID);
+      ps.setInt(2, userID);
       ResultSet rs = ps.executeQuery();
 
       while (rs.next())
       {
-        list.add(rs.getString("IngredientName") + " - " + rs.getDouble("Weight") + " g");
+        list.add(rs.getString("IngredientName") + " - " + rs.getDouble("WeightInGrams") + " g");
       }
     }
     catch (SQLException e)
@@ -178,19 +181,29 @@ public class RecipeIngredientDBAccess
     return list;
   }
 
-  public ArrayList<Recipe> searchIngredientsInRecipe(String word)
+  public ArrayList<Recipe> searchIngredientsInRecipe(String word, int userID)
   {
-    ArrayList<Integer> ingredients = new ArrayList<>();
-    String sql0 = "SELECT IngredientID FROM Ingredient WHERE IngredientName LIKE ?";
+    ArrayList<Recipe> recipes = new ArrayList<>();
 
-    try (Connection conn = DBManager.getDBConnection(); PreparedStatement ps = conn.prepareStatement(sql0))
+    String sql = "SELECT DISTINCT r.RecipeID, r.RecipeName "
+      + "FROM Recipe r "
+      + "JOIN RecipeIngredient ri ON r.RecipeID = ri.RecipeID "
+      + "JOIN Ingredient i ON ri.IngredientID = i.IngredientID "
+      + "WHERE i.IngredientName LIKE ? AND r.UserID = ?";
+
+    try (Connection conn = DBManager.getDBConnection(); PreparedStatement ps = conn.prepareStatement(sql))
     {
       ps.setString(1, "%" + word + "%");
+      ps.setInt(2, userID);
+
       ResultSet rs = ps.executeQuery();
 
       while (rs.next())
       {
-        ingredients.add(rs.getInt("IngredientID"));
+        recipes.add(new Recipe(
+          rs.getInt("RecipeID"),
+          rs.getString("RecipeName")
+        ));
       }
     }
     catch (SQLException e)
@@ -198,66 +211,6 @@ public class RecipeIngredientDBAccess
       e.printStackTrace();
     }
 
-    ArrayList<Integer> recipesIDs = new ArrayList<>();
-    String sql1 = "SELECT RecipeID FROM RecipeIngredient WHERE IngredientID LIKE ?";
-
-    try (Connection conn = DBManager.getDBConnection(); PreparedStatement ps = conn.prepareStatement(sql1))
-    {
-      for (int t = 0; t < ingredients.size(); t++)
-      {
-        ps.setString(1, String.valueOf(ingredients.get(t)));
-        ResultSet rs = ps.executeQuery();
-
-        while (rs.next())
-        {
-          boolean duplicate = false;
-          for (int j = 0; j < recipesIDs.size(); j++)
-          {
-            if (rs.getInt("RecipeID") == recipesIDs.get(j))
-            {
-              duplicate = true;
-            }
-          }
-          recipesIDs.add(rs.getInt("RecipeID"));
-        }
-      }
-    }
-    catch (SQLException e)
-    {
-      e.printStackTrace();
-    }
-
-    ArrayList<Recipe> recipes = new ArrayList<>();
-    String sql2 = "SELECT RecipeID, RecipeName FROM Recipe WHERE RecipeID LIKE ?";
-
-    try (Connection conn = DBManager.getDBConnection(); PreparedStatement ps = conn.prepareStatement(sql2))
-    {
-      for (int i = 0; i < recipesIDs.size(); i++)
-      {
-        ps.setString(1, "%" + recipesIDs.get(i) + "%");
-        ResultSet rs = ps.executeQuery();
-
-        while (rs.next())
-        {
-          boolean duplicate = false;
-          for (int j = 0; j < recipes.size(); j++)
-          {
-            if (rs.getInt("RecipeID") == recipes.get(j).getRecipeID())
-            {
-              duplicate = true;
-            }
-          }
-          if (!duplicate)
-          {
-            recipes.add(new Recipe(rs.getInt("RecipeID"), rs.getString("RecipeName")));
-          }
-        }
-      }
-    }
-    catch (SQLException e)
-    {
-      e.printStackTrace();
-    }
     return recipes;
   }
 
@@ -278,11 +231,11 @@ public class RecipeIngredientDBAccess
 //    riDB.deleteIngredientFromRecipe(2, 4);
     riDB.viewAllIngredientsForRecipe(2);
 
-    double[] macros = riDB.calculateRecipeMacros(2);
-    System.out.println("Recipe 2 Macros\n"
-      + "Protein:" + macros[0]
-      + "g\nCarbs:" + macros[1]
-      + "g\nFats:" + macros[2]
-      + "g\nCalories:" + macros[3] + "kcal"); //print out the tota; macros. i chose not to implement it into the database directly and instead I will show the total macros on screen when doing the gui layer
+//    double[] macros = riDB.calculateRecipeMacros(2);
+//    System.out.println("Recipe 2 Macros\n"
+//      + "Protein:" + macros[0]
+//      + "g\nCarbs:" + macros[1]
+//      + "g\nFats:" + macros[2]
+//      + "g\nCalories:" + macros[3] + "kcal"); //print out the tota; macros. i chose not to implement it into the database directly and instead I will show the total macros on screen when doing the gui layer
   }
 }

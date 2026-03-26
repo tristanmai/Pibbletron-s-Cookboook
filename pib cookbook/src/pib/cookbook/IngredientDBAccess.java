@@ -11,10 +11,10 @@ public class IngredientDBAccess
 {
 
   //inserts an ingreident into the databse with its macros and name. prepared statement is used to stop sql injection
-  public void insertIngredient(String name, double protein, double carbs, double fats, double calories)
+  public void insertIngredient(String name, double protein, double carbs, double fats, double calories, int userID)
   {
-    String sql = "INSERT INTO Ingredient(IngredientName, ProteinPer100g, CarbsPer100g, FatsPer100g, CaloriesPer100g)"
-      + "VALUES (?, ?, ?, ?, ?)";
+    String sql = "INSERT INTO Ingredient(IngredientName, ProteinPer100g, CarbsPer100g, FatsPer100g, CaloriesPer100g, UserID)"
+      + "VALUES (?, ?, ?, ?, ?, ?)";
 
     try (Connection conn = DBManager.getDBConnection(); PreparedStatement ps = conn.prepareStatement(sql))
     {
@@ -23,6 +23,7 @@ public class IngredientDBAccess
       ps.setDouble(3, carbs);
       ps.setDouble(4, fats);
       ps.setDouble(5, calories);
+      ps.setInt(6, userID);
 
       ps.executeUpdate();
       System.out.println("Ingredient inserted: " + name);
@@ -67,9 +68,9 @@ public class IngredientDBAccess
   }
 
   //updates existing ingredients and their macro values. identified using its primary key
-  public void updateIngredient(int ingredientID, String name, double protein, double carbs, double fats, double calories)
+  public void updateIngredient(int ingredientID, String name, double protein, double carbs, double fats, double calories, int userID)
   {
-    String sql = "UPDATE Ingredient SET IngredientName = ?, ProteinPer100g = ?, CarbsPer100g = ?, FatsPer100g = ?, CaloriesPer100g = ? WHERE IngredientID = ?";
+    String sql = "UPDATE Ingredient SET IngredientName = ?, ProteinPer100g = ?, CarbsPer100g = ?, FatsPer100g = ?, CaloriesPer100g = ? WHERE IngredientID = ? AND UserID = ?";
 
     try (Connection conn = DBManager.getDBConnection(); PreparedStatement ps = conn.prepareStatement(sql))
     {
@@ -79,6 +80,7 @@ public class IngredientDBAccess
       ps.setDouble(4, fats);
       ps.setDouble(5, calories);
       ps.setInt(6, ingredientID);
+      ps.setInt(7, userID);
 
       int rows = ps.executeUpdate();
       System.out.println("ingredients updated: " + rows);
@@ -91,13 +93,14 @@ public class IngredientDBAccess
   }
 
   //deletes an ingredient from the database using its id. since ingredients are used in recipes, i foudnb out that i can use cascading delete to remove it from all recipes that the ingredient was in
-  public void deleteINgredient(int ingredientID)
+  public void deleteINgredient(int ingredientID, int UserID)
   {
-    String sql = "DELETE FROM Ingredient WHERE IngredientID = ?";
+    String sql = "DELETE FROM Ingredient WHERE IngredientID = ? AND UserID = ?";
 
     try (Connection conn = DBManager.getDBConnection(); PreparedStatement ps = conn.prepareStatement(sql))
     {
       ps.setInt(1, ingredientID);
+      ps.setInt(2, UserID);
       ps.executeUpdate();
 
       System.out.println("Ingredient deleted: Id " + ingredientID);
@@ -109,15 +112,17 @@ public class IngredientDBAccess
     }
   }
   
-  public ArrayList<Ingredient> getAllIngredients()
+  public ArrayList<Ingredient> getAllIngredients(int userID)
   {
     ArrayList<Ingredient> ingredients = new ArrayList<>();
-    String sql = "SELECT IngredientID, IngredientName FROM Ingredient";
+    String sql = "SELECT IngredientID, IngredientName FROM Ingredient WHERE UserID = ?";
     
     try (Connection conn = DBManager.getDBConnection();
-      PreparedStatement ps = conn.prepareStatement(sql);
-      ResultSet rs = ps.executeQuery())
+      PreparedStatement ps = conn.prepareStatement(sql))
     {
+      ps.setInt(1, userID);
+      
+      ResultSet rs = ps.executeQuery();
       while(rs.next())
       {
         ingredients.add(new Ingredient(rs.getInt("IngredientID"), rs.getString("IngredientName")));
@@ -130,15 +135,16 @@ public class IngredientDBAccess
     return ingredients;
   }
   
-  public ArrayList<Ingredient> searchIngredients(String word)
+  public ArrayList<Ingredient> searchIngredients(String word, int UserID)
   {
     ArrayList<Ingredient> ingredients = new ArrayList<>();
-    String sql = "SELECT IngredientID, IngredientName FROM Ingredient WHERE IngredientName LIKE ?";
+    String sql = "SELECT IngredientID, IngredientName FROM Ingredient WHERE IngredientName LIKE ? AND UserID = ?";
     
     try (Connection conn = DBManager.getDBConnection();
       PreparedStatement ps = conn.prepareStatement(sql))
     {
       ps.setString(1, "%" + word + "%");
+      ps.setInt(2, UserID);
       ResultSet rs = ps.executeQuery();
       
       while(rs.next())
@@ -153,14 +159,15 @@ public class IngredientDBAccess
     return ingredients;
   }
   
-  public Ingredient getIngredientInfo(int ingredientID)
+  public Ingredient getIngredientInfo(int ingredientID, int userID)
   {
-    String sql = "SELECT * FROM Ingredient WHERE IngredientID = ?";
+    String sql = "SELECT * FROM Ingredient WHERE IngredientID = ? AND UserID = ?";
     
     try (Connection conn = DBManager.getDBConnection();
       PreparedStatement ps = conn.prepareStatement(sql))
     {
       ps.setInt(1, ingredientID);
+      ps.setInt(2, userID);
       ResultSet rs = ps.executeQuery();
       
       if(rs.next())
@@ -171,7 +178,8 @@ public class IngredientDBAccess
         rs.getInt("ProteinPer100g"), 
         rs.getInt("CarbsPer100g"), 
         rs.getInt("FatsPer100g"), 
-        rs.getInt("CaloriesPer100g"));
+        rs.getInt("CaloriesPer100g"),
+        rs.getInt("UserID"));
       }
     }
     catch(SQLException e)
