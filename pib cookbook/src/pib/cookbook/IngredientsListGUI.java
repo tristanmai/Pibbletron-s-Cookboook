@@ -172,11 +172,13 @@ public class IngredientsListGUI extends JFrame implements ActionListener
     else if (command.startsWith("VIEW_"))
     {
       int ingredientID = Integer.parseInt(command.substring(5));
+      this.dispose();
       new IngredientPageGUI(ingredientID, currentUserID).setVisible(true);
     }
     else if (command.startsWith("EDIT_"))
     {
       int ingredientID = Integer.parseInt(command.substring(5));
+      this.dispose();
       new EditIngredientGUI(currentUserID, ingredientID).setVisible(true);
     }
     else if (command.startsWith("DELETE_"))

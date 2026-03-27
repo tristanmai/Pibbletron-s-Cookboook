@@ -96,8 +96,11 @@ public class HomePageGUI extends JFrame implements ActionListener
     searchButton.setForeground(BROWN);
     searchButton.setBackground(BEIGE_COLOR);
     searchButton.addActionListener(this);
-    
-    String[] options = {"All", "Recipe Name", "Ingredients Used"};
+
+    String[] options =
+    {
+      "All", "Recipe Name", "Ingredients Used"
+    };
     drop = new JComboBox<>(options);
     drop.setPreferredSize(new Dimension(5, 10));
 
@@ -235,7 +238,7 @@ public class HomePageGUI extends JFrame implements ActionListener
     {
       for (Recipe r : recipes)
       {
-        if (!r.equals(r2))
+        if (!r.getRecipeName().equals(r2.getRecipeName()))//makes sure no duplicates btwn the two queries
         {
           addRecipeRow(r2.getRecipeID(), r2.getRecipeName());
           recipeListPanel.add(Box.createVerticalStrut(5));
@@ -272,16 +275,16 @@ public class HomePageGUI extends JFrame implements ActionListener
     else if (command.equals("Search"))
     {
       String option = (String) drop.getSelectedItem();
-      
-      if(option.equals("All"))
+
+      if (option.equals("All"))
       {
         displayRecipes(recipeDB.searchRecipes(searchField.getText(), currentUserID), recipeIngredientDB.searchIngredientsInRecipe(searchField.getText(), currentUserID));
       }
-      else if(option.equals("Recipe Name"))
+      else if (option.equals("Recipe Name"))
       {
         displayRecipes(recipeDB.searchRecipes(searchField.getText(), currentUserID));
       }
-      else if(option.equals("Ingredients Used"))
+      else if (option.equals("Ingredients Used"))
       {
         displayRecipes(recipeIngredientDB.searchIngredientsInRecipe(searchField.getText(), currentUserID));
       }
@@ -289,11 +292,13 @@ public class HomePageGUI extends JFrame implements ActionListener
     else if (command.startsWith("VIEW_"))
     {
       int recipeID = Integer.parseInt(command.substring(5));
+      this.dispose();
       new RecipePageGUI(recipeID, currentUserID).setVisible(true);
     }
     else if (command.startsWith("EDIT_"))
     {
       int recipeID = Integer.parseInt(command.substring(5));
+      this.dispose();
       new EditRecipeGUI(recipeID, currentUserID).setVisible(true);
     }
     else if (command.startsWith("DELETE_"))

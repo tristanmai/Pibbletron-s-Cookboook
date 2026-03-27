@@ -23,6 +23,7 @@ import static pib.cookbook.SignupGUI.BEIGE_COLOR;
 
 public class EditRecipeGUI extends JFrame implements ActionListener
 {
+
   private int currentUserID;
   private int recipeID;
 
@@ -30,8 +31,6 @@ public class EditRecipeGUI extends JFrame implements ActionListener
   private JTextField timeField;
   private JTextArea descriptionArea;
   private JTextArea instructionsArea;
-  
-  int currentRecipeID;
 
   private JComboBox<Ingredient> ingredientDropdown;
   private JTextField weightField;
@@ -47,7 +46,7 @@ public class EditRecipeGUI extends JFrame implements ActionListener
     this.setBounds(410, 100, 600, 800);
     this.setDefaultCloseOperation(EXIT_ON_CLOSE);
     this.setLayout(new BorderLayout());
-    
+
     this.currentUserID = userID;
     this.recipeID = recipeID;
 
@@ -57,94 +56,93 @@ public class EditRecipeGUI extends JFrame implements ActionListener
     background.setLayout(new BorderLayout());
     background.setOpaque(true);
     setContentPane(background);
-    
+
     //header
     JPanel header = new JPanel(new BorderLayout());
     header.setOpaque(false);
-    
+
     //bac button
     JButton back = new JButton("Back");
     back.addActionListener(this);
     back.setBackground(BEIGE_COLOR);
     back.setForeground(BROWN);
-    
+
     JLabel titleLabel = new JLabel("        Edit Recipe");
     titleLabel.setFont(new Font("SansSerif", Font.BOLD, 30));
     titleLabel.setForeground(BROWN);
-    
+
     header.add(back, BorderLayout.WEST);
     header.add(titleLabel, BorderLayout.CENTER);
     background.add(header, BorderLayout.NORTH);
-    
+
     //center panel
     JPanel center = new JPanel();
     center.setOpaque(false);
     center.setLayout(new BoxLayout(center, BoxLayout.Y_AXIS));
-    
+
     //namerow for inputing values
     JPanel nameRow = new JPanel(new FlowLayout(FlowLayout.LEFT, 2, 0));
     nameRow.setOpaque(false);
     nameField = new JTextField(20);
     nameRow.add(new JLabel("Recipe Name:"));
     nameRow.add(nameField);
-    
+
     //timerow for inputing values
     JPanel timeRow = new JPanel(new FlowLayout(FlowLayout.LEFT, 2, 0));
     timeRow.setOpaque(false);
     timeField = new JTextField(20);
     timeRow.add(new JLabel("Cooking Time (min):"));
     timeRow.add(timeField);
-    
+
     //descriptino row for inputing values
     JPanel descRow = new JPanel(new FlowLayout(FlowLayout.LEFT, 2, 0));
     descRow.setOpaque(false);
     descriptionArea = new JTextArea(3, 20);
     descRow.add(new JLabel("Description:"));
     descRow.add(descriptionArea);
-    
+
     //instruction row for inputing values
     JPanel instRow = new JPanel(new FlowLayout(FlowLayout.LEFT, 2, 0));
     instRow.setOpaque(false);
     instructionsArea = new JTextArea(5, 20);
     instRow.add(new JLabel("Instructions:"));
     instRow.add(instructionsArea);
-    
+
     center.add(Box.createVerticalStrut(30));
     center.add(nameRow);
     center.add(timeRow);
     center.add(descRow);
     center.add(instRow);
-    
-    
+
     JLabel ingredientTitle = new JLabel("Add Ingredients");
     ingredientTitle.setFont(new Font("SansSerif", Font.BOLD, 22));
     ingredientTitle.setForeground(BROWN);
-    
+
     JPanel ingredientRow = new JPanel(new FlowLayout(FlowLayout.LEFT, 5, 0));
     ingredientRow.setOpaque(false);
-    
+
     ingredientDropdown = new JComboBox<>();
     loadIngredients();
-    
+
     weightField = new JTextField(5);
-    
+
     JButton addIngredientButton = new JButton("Add");
     addIngredientButton.addActionListener(this);
     addIngredientButton.setBackground(BEIGE_COLOR);
     addIngredientButton.setForeground(BROWN);
-    
+
     ingredientRow.add(new JLabel("Ingredient:"), BorderLayout.CENTER);
     ingredientRow.add(ingredientDropdown);
     ingredientRow.add(new JLabel("Weight (g):"));
     ingredientRow.add(weightField);
     ingredientRow.add(addIngredientButton);
-    
+
     center.add(Box.createVerticalStrut(40));
     center.add(ingredientTitle);
     center.add(ingredientRow);
-    
+
     background.add(center, BorderLayout.CENTER);
-    
+
     JPanel bottomPanel = new JPanel(new FlowLayout(FlowLayout.CENTER, 30, 20));
     bottomPanel.setOpaque(false);
 
@@ -158,29 +156,29 @@ public class EditRecipeGUI extends JFrame implements ActionListener
     bottomPanel.add(recipeButton);
     background.add(bottomPanel, BorderLayout.SOUTH);
   }
-  
+
   //load the ingredients into the dropdown box
   private void loadIngredients()
   {
     ingredientDropdown.removeAllItems();
     ArrayList<Ingredient> ingredients = ingredientDB.getAllIngredients(currentUserID);
-    
-    for(Ingredient i : ingredients)
+
+    for (Ingredient i : ingredients)
     {
       ingredientDropdown.addItem(i);
     }
   }
-  
+
   public void actionPerformed(ActionEvent e)
   {
     String command = e.getActionCommand();
-    
-    if(command.equals("Back"))
+
+    if (command.equals("Back"))
     {
       this.dispose();
       new HomePageGUI(currentUserID).setVisible(true);
     }
-    else if(command.equals("Update"))
+    else if (command.equals("Update"))
     {
       //update the recipe db
       try
@@ -188,25 +186,30 @@ public class EditRecipeGUI extends JFrame implements ActionListener
         String desc = descriptionArea.getText();
         String instr = instructionsArea.getText();
         int cookTime = Integer.parseInt(timeField.getText());
-        
+
         recipeDB.updateRecipe(recipeID, instr, desc, cookTime, currentUserID);
-        currentRecipeID = recipeDB.getRecipeID(nameField.getText());
       }
-      catch(NumberFormatException ex)
+      catch (NumberFormatException ex)
       {
         JOptionPane.showMessageDialog(null, "Cooking time has to be a number bruh.");
       }
     }
-    else if(command.equals("Add"))
-    { 
+    else if (command.equals("Add"))
+    {
       //connect ingredients to recipe
       try
       {
         Ingredient ing = (Ingredient) ingredientDropdown.getSelectedItem();
+        
+        if (ing == null)
+        {
+          return;
+        }
+        
         double weight = Double.parseDouble(weightField.getText());
-        
-        recipeIngredientDB.insertIngredientToRecipe(currentRecipeID, ing.getIngredientID(), weight);
-        
+
+        recipeIngredientDB.insertIngredientToRecipe(this.recipeID, ing.getIngredientID(), weight);
+
         JOptionPane.showMessageDialog(null, "Ingredient added");
         weightField.setText("");
       }
@@ -216,6 +219,7 @@ public class EditRecipeGUI extends JFrame implements ActionListener
       }
     }
   }
+
   public static void main(String[] args)
   {
     new EditRecipeGUI(7, 5).setVisible(true);

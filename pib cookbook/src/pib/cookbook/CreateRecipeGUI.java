@@ -195,7 +195,7 @@ public class CreateRecipeGUI extends JFrame implements ActionListener
       
         JOptionPane.showMessageDialog(null, "Recipe Created. Now add ingredients!");
         
-        currentRecipeID = recipeDB.getRecipeID(nameField.getText());
+        currentRecipeID = recipeDB.getRecipeID(nameField.getText(), currentUserID);
       }
       catch(NumberFormatException ex)
       {
@@ -214,6 +214,12 @@ public class CreateRecipeGUI extends JFrame implements ActionListener
       try
       {
         Ingredient ing = (Ingredient) ingredientDropdown.getSelectedItem();
+        
+        if (ing == null)
+        {
+          return;
+        }
+        
         double weight = Double.parseDouble(weightField.getText());
         
         recipeIngredientDB.insertIngredientToRecipe(currentRecipeID, ing.getIngredientID(), weight);

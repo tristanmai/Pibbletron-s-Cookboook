@@ -184,13 +184,14 @@ public class RecipeDBAccess
     return recipes;
   }
 
-  public int getRecipeID(String recipeName)
+  public int getRecipeID(String recipeName, int userID)
   {
-    String sql = "SELECT RecipeID FROM Recipe WHERE RecipeName = ?";
+    String sql = "SELECT RecipeID FROM Recipe WHERE RecipeName = ? AND UserID = ?";
 
     try (Connection conn = DBManager.getDBConnection(); PreparedStatement ps = conn.prepareStatement(sql))
     {
       ps.setString(1, recipeName);
+      ps.setInt(2, userID);
       ResultSet rs = ps.executeQuery();
 
       if (rs.next())

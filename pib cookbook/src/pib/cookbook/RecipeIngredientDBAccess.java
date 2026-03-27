@@ -116,7 +116,7 @@ public class RecipeIngredientDBAccess
       + "ri.WeightInGrams "
       + "FROM RecipeIngredient ri " //again using ri for recipe ingredient
       + "JOIN Ingredient i ON ri.IngredientID = i.IngredientID " //joined on ingredient id
-      + "JOIN Recipe r ON ri.RecipeID = r.RecipeID"
+      + "JOIN Recipe r ON ri.RecipeID = r.RecipeID "
       + "WHERE ri.RecipeID = ? AND UserID = ?";
 
     //initialize macros
@@ -160,7 +160,7 @@ public class RecipeIngredientDBAccess
     String sql = "SELECT i.IngredientName, ri.WeightInGrams "
       + "FROM RecipeIngredient ri "
       + "JOIN Ingredient i ON ri.IngredientID = i.IngredientID "
-      + "JOIN Recipe r ON ri.RecipeID = r.RecipeID"
+      + "JOIN Recipe r ON ri.RecipeID = r.RecipeID "
       + "WHERE ri.RecipeID = ? AND r.UserID = ?";
 
     try (Connection conn = DBManager.getDBConnection(); PreparedStatement ps = conn.prepareStatement(sql))
@@ -189,7 +189,7 @@ public class RecipeIngredientDBAccess
       + "FROM Recipe r "
       + "JOIN RecipeIngredient ri ON r.RecipeID = ri.RecipeID "
       + "JOIN Ingredient i ON ri.IngredientID = i.IngredientID "
-      + "WHERE i.IngredientName LIKE ? AND r.UserID = ?";
+      + "WHERE i.IngredientName LIKE ? AND r.UserID = ?";//add commentsssssssssssssssss
 
     try (Connection conn = DBManager.getDBConnection(); PreparedStatement ps = conn.prepareStatement(sql))
     {
