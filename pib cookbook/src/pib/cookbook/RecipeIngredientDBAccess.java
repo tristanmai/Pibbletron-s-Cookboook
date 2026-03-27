@@ -117,7 +117,7 @@ public class RecipeIngredientDBAccess
       + "FROM RecipeIngredient ri " //again using ri for recipe ingredient
       + "JOIN Ingredient i ON ri.IngredientID = i.IngredientID " //joined on ingredient id
       + "JOIN Recipe r ON ri.RecipeID = r.RecipeID "
-      + "WHERE ri.RecipeID = ? AND UserID = ?";
+      + "WHERE ri.RecipeID = ? AND r.UserID = ?";//do r.UserID to avoid ambigous clause bc recipe and ingredient have userID so the system didnt know which one to choose
 
     //initialize macros
     double totalProtein = 0;

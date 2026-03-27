@@ -29,6 +29,7 @@ public class SignupGUI extends JFrame implements ActionListener
   private JPasswordField passwordField;
   private JPasswordField password2Field;
   private JButton signupButton;
+  private JButton backButton;
 
   //connect to userdbaccess
   private UserDBAccess userDB;
@@ -112,7 +113,11 @@ public class SignupGUI extends JFrame implements ActionListener
     //text of buttons and adding action listener to it
     signupButton = new JButton("Signup");
     signupButton.addActionListener(this);
+    
+    backButton = new JButton("Back");
+    backButton.addActionListener(this);
 
+    buttonPanel.add(backButton);
     buttonPanel.add(signupButton);
 
     //add panel to center and button to the bottom
@@ -136,6 +141,10 @@ public class SignupGUI extends JFrame implements ActionListener
       {
         JOptionPane.showMessageDialog(null, "Passwords not identical");
       }
+      else if(usernameField.getText().equals("") || passwordField.equals("") || password2Field.equals(""))
+      {
+        JOptionPane.showMessageDialog(null, "Fill out all fields!");
+      }
       else
       {
         //insert into db
@@ -153,6 +162,11 @@ public class SignupGUI extends JFrame implements ActionListener
           JOptionPane.showMessageDialog(null, "Username taken");
         }
       }
+    }
+    else if(command.equals("Back"))
+    {
+      this.dispose();
+      new LoginGUI().setVisible(true);
     }
   }
 
