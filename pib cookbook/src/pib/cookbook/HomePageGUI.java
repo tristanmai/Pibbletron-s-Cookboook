@@ -210,16 +210,22 @@ public class HomePageGUI extends JFrame implements ActionListener
     JButton deleteButton = new JButton("Delete");
     deleteButton.setForeground(BROWN);
     deleteButton.setBackground(BEIGE_COLOR);
+    JButton shopButton = new JButton("Shopping List");
+    shopButton.setForeground(BROWN);
+    shopButton.setBackground(BEIGE_COLOR);
 
     editButton.addActionListener(this);
     deleteButton.addActionListener(this);
+    shopButton.addActionListener(this);
 
     recipeButtonsPanel.add(editButton);
     recipeButtonsPanel.add(deleteButton);
+    recipeButtonsPanel.add(shopButton);
 
     recipeButton.setActionCommand("VIEW_" + recipeID);
     editButton.setActionCommand("EDIT_" + recipeID);
     deleteButton.setActionCommand("DELETE_" + recipeID);
+    shopButton.setActionCommand("SHOP_" + recipeID);
 
     row.setMaximumSize(new Dimension(Integer.MAX_VALUE, 50));
 
@@ -353,6 +359,13 @@ public class HomePageGUI extends JFrame implements ActionListener
       int recipeID = Integer.parseInt(command.substring(7));
       recipeDB.deleteRecipe(recipeID, currentUserID);
       displayRecipes(recipeDB.getAllRecipes(currentUserID));
+    }
+    else if (command.startsWith("SHOP_"))
+    {
+      int recipeID = Integer.parseInt(command.substring(5));
+      recipeIngredientDB.getIngredientDisplay(recipeID, currentUserID);
+      this.dispose();
+      new ShoppingList(recipeID, currentUserID).setVisible(true);
     }
     else if (command.equals("Create Recipe"))
     {
