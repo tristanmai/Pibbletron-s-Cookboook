@@ -7,6 +7,7 @@ import java.awt.Font;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.ArrayList;
+import javax.swing.BorderFactory;
 import javax.swing.Box;
 import javax.swing.BoxLayout;
 import javax.swing.JButton;
@@ -27,10 +28,14 @@ public class EditRecipeGUI extends JFrame implements ActionListener
   private int currentUserID;
   private int recipeID;
 
-  private JTextField nameField;
   private JTextField timeField;
   private JTextArea descriptionArea;
   private JTextArea instructionsArea;
+
+  private String mealType;
+  private JButton breakfastButton;
+  private JButton lunchButton;
+  private JButton dinnerButton;
 
   private JComboBox<Ingredient> ingredientDropdown;
   private JTextField weightField;
@@ -80,13 +85,6 @@ public class EditRecipeGUI extends JFrame implements ActionListener
     center.setOpaque(false);
     center.setLayout(new BoxLayout(center, BoxLayout.Y_AXIS));
 
-    //namerow for inputing values
-    JPanel nameRow = new JPanel(new FlowLayout(FlowLayout.LEFT, 2, 0));
-    nameRow.setOpaque(false);
-    nameField = new JTextField(20);
-    nameRow.add(new JLabel("Recipe Name:"));
-    nameRow.add(nameField);
-
     //timerow for inputing values
     JPanel timeRow = new JPanel(new FlowLayout(FlowLayout.LEFT, 2, 0));
     timeRow.setOpaque(false);
@@ -109,14 +107,58 @@ public class EditRecipeGUI extends JFrame implements ActionListener
     instRow.add(instructionsArea);
 
     center.add(Box.createVerticalStrut(30));
-    center.add(nameRow);
     center.add(timeRow);
     center.add(descRow);
     center.add(instRow);
 
+    JPanel mealTypeRow = new JPanel(new FlowLayout(FlowLayout.LEFT, 5, 0));
+    mealTypeRow.setOpaque(false);
+
+    JLabel mealTypeLabel = new JLabel("Meal Type:");
+    mealTypeLabel.setFont(new Font("SansSerif", Font.BOLD, 16));
+    mealTypeLabel.setForeground(BROWN);
+
+    breakfastButton = new JButton("Breakfast");
+    lunchButton = new JButton("Lunch");
+    dinnerButton = new JButton("Dinner");
+
+    breakfastButton.addActionListener(this);
+    lunchButton.addActionListener(this);
+    dinnerButton.addActionListener(this);
+
+    breakfastButton.setBackground(BEIGE_COLOR);
+    breakfastButton.setForeground(BROWN);
+    lunchButton.setBackground(BEIGE_COLOR);
+    lunchButton.setForeground(BROWN);
+    dinnerButton.setBackground(BEIGE_COLOR);
+    dinnerButton.setForeground(BROWN);
+
+    mealTypeRow.add(mealTypeLabel);
+    mealTypeRow.add(breakfastButton);
+    mealTypeRow.add(lunchButton);
+    mealTypeRow.add(dinnerButton);
+
+    center.add(Box.createVerticalStrut(20));
+    center.add(mealTypeRow);
+
+    JButton recipeButton = new JButton("Update");
+    recipeButton.setPreferredSize(new Dimension(150, 50));
+    recipeButton.setFont(new Font("SansSerif", Font.PLAIN, 20));
+    recipeButton.setForeground(BROWN);
+    recipeButton.setBackground(BEIGE_COLOR);
+    recipeButton.addActionListener(this);
+
+    JPanel buttonPanel = new JPanel(new FlowLayout(FlowLayout.CENTER));
+    buttonPanel.setOpaque(false);
+
+    buttonPanel.add(recipeButton);
+    center.add(Box.createVerticalStrut(20));
+    center.add(buttonPanel);
+
     JLabel ingredientTitle = new JLabel("Add Ingredients");
     ingredientTitle.setFont(new Font("SansSerif", Font.BOLD, 22));
     ingredientTitle.setForeground(BROWN);
+    ingredientTitle.setAlignmentX(CENTER_ALIGNMENT);
 
     JPanel ingredientRow = new JPanel(new FlowLayout(FlowLayout.LEFT, 5, 0));
     ingredientRow.setOpaque(false);
@@ -143,18 +185,36 @@ public class EditRecipeGUI extends JFrame implements ActionListener
 
     background.add(center, BorderLayout.CENTER);
 
-    JPanel bottomPanel = new JPanel(new FlowLayout(FlowLayout.CENTER, 30, 20));
-    bottomPanel.setOpaque(false);
+    this.loadRecipeData();
+  }
 
-    JButton recipeButton = new JButton("Update");
-    recipeButton.setPreferredSize(new Dimension(150, 50));
-    recipeButton.setFont(new Font("SansSerif", Font.PLAIN, 20));
-    recipeButton.setForeground(BROWN);
-    recipeButton.setBackground(BEIGE_COLOR);
-    recipeButton.addActionListener(this);
+  private void loadRecipeData()
+  {
+    Recipe r = recipeDB.getRecipeByID(recipeID, currentUserID);
+    if (r != null)
+    {
+      timeField.setText(String.valueOf(r.getCookTime()));
+      descriptionArea.setText(r.getDescription());
+      instructionsArea.setText(r.getInstructions());
+      mealType = r.getMealType();
 
-    bottomPanel.add(recipeButton);
-    background.add(bottomPanel, BorderLayout.SOUTH);
+      if ("Breakfast".equals(mealType))
+      {
+        highlightMeal(breakfastButton);
+      }
+      else if ("Lunch".equals(mealType))
+      {
+        highlightMeal(lunchButton);
+      }
+      else if ("Dinner".equals(mealType))
+      {
+        highlightMeal(dinnerButton);
+      }
+    }
+    else
+    {
+      JOptionPane.showMessageDialog(this, "Recipe not found!");
+    }
   }
 
   //load the ingredients into the dropdown box
@@ -167,6 +227,17 @@ public class EditRecipeGUI extends JFrame implements ActionListener
     {
       ingredientDropdown.addItem(i);
     }
+  }
+
+  private void highlightMeal(JButton selectedButton)
+  {
+    //reset all  da buttons
+    breakfastButton.setBorder(null);
+    lunchButton.setBorder(null);
+    dinnerButton.setBorder(null);
+
+    //highlight the selected one
+    selectedButton.setBorder(BorderFactory.createLineBorder(BROWN, 2));
   }
 
   public void actionPerformed(ActionEvent e)
@@ -187,12 +258,30 @@ public class EditRecipeGUI extends JFrame implements ActionListener
         String instr = instructionsArea.getText();
         int cookTime = Integer.parseInt(timeField.getText());
 
-        recipeDB.updateRecipe(recipeID, instr, desc, cookTime, currentUserID);
+        recipeDB.updateRecipe(recipeID, instr, desc, cookTime, mealType, currentUserID);
+        JOptionPane.showMessageDialog(null, "Updated");
+        this.dispose();
+        new HomePageGUI(currentUserID).setVisible(true); 
       }
       catch (NumberFormatException ex)
       {
         JOptionPane.showMessageDialog(null, "Cooking time has to be a number bruh.");
       }
+    }
+    else if (command.equals("Breakfast"))
+    {
+      mealType = "Breakfast";
+      highlightMeal(breakfastButton);
+    }
+    else if (command.equals("Lunch"))
+    {
+      mealType = "Lunch";
+      highlightMeal(lunchButton);
+    }
+    else if (command.equals("Dinner"))
+    {
+      mealType = "Dinner";
+      highlightMeal(dinnerButton);
     }
     else if (command.equals("Add"))
     {
@@ -200,12 +289,12 @@ public class EditRecipeGUI extends JFrame implements ActionListener
       try
       {
         Ingredient ing = (Ingredient) ingredientDropdown.getSelectedItem();
-        
+
         if (ing == null)
         {
           return;
         }
-        
+
         double weight = Double.parseDouble(weightField.getText());
 
         recipeIngredientDB.insertIngredientToRecipe(this.recipeID, ing.getIngredientID(), weight);

@@ -7,6 +7,7 @@ public class Recipe
   private String instructions;
   private String description;
   private int cookingTime;
+  private String mealType;
   private int userID;
   
   public Recipe(int recipeID, String recipeName)
@@ -18,13 +19,14 @@ public class Recipe
   {
     this.recipeID = recipeID;
   }
-  public Recipe(int recipeID, String recipeName, String instructions, String description, int cookingTime, int userID)
+  public Recipe(int recipeID, String recipeName, String instructions, String description, int cookingTime, String mealType, int userID)
   {
     this.recipeID = recipeID;
     this.recipeName = recipeName;
     this.instructions = instructions;
     this.description = description;
     this.cookingTime = cookingTime;
+    this.mealType = mealType;
     this.userID = userID;
   }
   
@@ -48,5 +50,9 @@ public class Recipe
   public int getCookTime()
   {
     return cookingTime;
+  }
+  public String getMealType()
+  {
+    return mealType;
   }
 }

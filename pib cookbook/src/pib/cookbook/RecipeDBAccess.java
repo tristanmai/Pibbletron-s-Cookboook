@@ -11,11 +11,11 @@ public class RecipeDBAccess
 {
 
   //inserts a recipe into the database
-  public void insertRecipe(String name, String instructions, String description, int cookingTime, int userID)
+  public void insertRecipe(String name, String instructions, String description, int cookingTime, String mealType, int userID)
   {
     //the attributes it is inserting into
-    String sql = "INSERT INTO Recipe (RecipeName, Instructions, Description, CookingTime, UserID)"
-      + "VALUES (?, ?, ?, ?, ?)";
+    String sql = "INSERT INTO Recipe (RecipeName, Instructions, Description, CookingTime, MealType, UserID)"
+      + "VALUES (?, ?, ?, ?, ?, ?)";
 
     //connectingf to the db
     try (Connection conn = DBManager.getDBConnection(); PreparedStatement ps = conn.prepareStatement(sql))
@@ -24,7 +24,8 @@ public class RecipeDBAccess
       ps.setString(2, instructions);
       ps.setString(3, description);
       ps.setInt(4, cookingTime);
-      ps.setInt(5, userID);
+      ps.setString(5, mealType);
+      ps.setInt(6, userID);
 
       ps.executeUpdate();
       System.out.println("Recipe inserted: " + name);
@@ -69,13 +70,14 @@ public class RecipeDBAccess
   }
 
   //updates the existing recipes by getting its recipe id and the updated version
-  public void updateRecipe(int recipeID, String instructions, String description, int cookingTime, int userID)
+  public void updateRecipe(int recipeID, String instructions, String description, int cookingTime, String mealType, int userID)
   {
     //uses sql update clause and finding the recipe its recipe id
     String sql = "UPDATE Recipe SET "
       + "Instructions = ?,"
       + "Description = ?, "
-      + "CookingTime = ? WHERE RecipeID = ? AND userID = ?";
+      + "CookingTime = ?, "
+      + "MealType = ? WHERE RecipeID = ? AND userID = ?";
 
     try (Connection conn = DBManager.getDBConnection(); PreparedStatement ps = conn.prepareStatement(sql))
     {
@@ -83,8 +85,9 @@ public class RecipeDBAccess
       ps.setString(1, instructions);
       ps.setString(2, description);
       ps.setInt(3, cookingTime);
-      ps.setInt(4, recipeID);
-      ps.setInt(5, userID);
+      ps.setString(4, mealType);
+      ps.setInt(5, recipeID);
+      ps.setInt(6, userID);
 
       int rows = ps.executeUpdate();
       System.out.println("Recipes updates: " + rows);
@@ -183,6 +186,29 @@ public class RecipeDBAccess
     }
     return recipes;
   }
+  
+  public ArrayList<Recipe> searchRecipeType(String word, int userID)
+  {
+    ArrayList<Recipe> recipes = new ArrayList<>();
+    String sql = "SELECT RecipeID, RecipeName FROM Recipe WHERE MealType LIKE ? AND UserID = ?";
+
+    try (Connection conn = DBManager.getDBConnection(); PreparedStatement ps = conn.prepareStatement(sql))
+    {
+      ps.setString(1, word);
+      ps.setInt(2, userID);
+      ResultSet rs = ps.executeQuery();
+
+      while (rs.next())
+      {
+        recipes.add(new Recipe(rs.getInt("RecipeID"), rs.getString("RecipeName")));
+      }
+    }
+    catch (SQLException e)
+    {
+      e.printStackTrace();
+    }
+    return recipes;
+  }
 
   public int getRecipeID(String recipeName, int userID)
   {
@@ -224,6 +250,7 @@ public class RecipeDBAccess
           rs.getString("Instructions"),
           rs.getString("Description"),
           rs.getInt("CookingTime"),
+          rs.getString("MealType"),
           rs.getInt("UserID"));
       }
     }

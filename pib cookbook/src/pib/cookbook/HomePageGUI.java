@@ -34,7 +34,7 @@ public class HomePageGUI extends JFrame implements ActionListener
   public HomePageGUI(int userID)
   {
     super("Recipe Book Home");
-    this.setBounds(410, 100, 600, 800);
+    this.setBounds(410, 100, 640, 800);
     this.setDefaultCloseOperation(EXIT_ON_CLOSE);
     this.setLayout(new BorderLayout());
 
@@ -67,9 +67,9 @@ public class HomePageGUI extends JFrame implements ActionListener
     headerPanel.add(titleLabel, BorderLayout.CENTER);
 
     //sort
-    JPanel sortPanel = new JPanel(new FlowLayout(FlowLayout.LEFT, 20, 5));
+    JPanel sortPanel = new JPanel(new FlowLayout(FlowLayout.LEFT, 0, 5));
     sortPanel.setOpaque(false);
-    JLabel sortLabel = new JLabel("Sort By:");
+    JLabel sortLabel = new JLabel("   Sort By:");
     sortLabel.setForeground(BROWN);
     JButton recentButton = new JButton("Recent");
     recentButton.setForeground(BROWN);
@@ -83,10 +83,29 @@ public class HomePageGUI extends JFrame implements ActionListener
     favSortButton.setForeground(BROWN);
     favSortButton.setBackground(BEIGE_COLOR);
     favSortButton.addActionListener(this);
+
+    JButton breakfastSortButton = new JButton("Breakfast");
+    breakfastSortButton.setForeground(BROWN);
+    breakfastSortButton.setBackground(BEIGE_COLOR);
+    breakfastSortButton.addActionListener(this);
+
+    JButton lunchSortButton = new JButton("Lunch");
+    lunchSortButton.setForeground(BROWN);
+    lunchSortButton.setBackground(BEIGE_COLOR);
+    lunchSortButton.addActionListener(this);
+
+    JButton dinnerSortButton = new JButton("Dinner");
+    dinnerSortButton.setForeground(BROWN);
+    dinnerSortButton.setBackground(BEIGE_COLOR);
+    dinnerSortButton.addActionListener(this);
+
     sortPanel.add(sortLabel);
     sortPanel.add(recentButton);
     sortPanel.add(cookTimeButton);
     sortPanel.add(favSortButton);
+    sortPanel.add(breakfastSortButton);
+    sortPanel.add(lunchSortButton);
+    sortPanel.add(dinnerSortButton);
 
     //search
     JPanel searchPanel = new JPanel(new BorderLayout(7, 5));
@@ -236,13 +255,19 @@ public class HomePageGUI extends JFrame implements ActionListener
     }
     for (Recipe r2 : recipes2)
     {
+      boolean alreadyExists = false;
       for (Recipe r : recipes)
       {
-        if (!r.getRecipeName().equals(r2.getRecipeName()))//makes sure no duplicates btwn the two queries
+        if (r.getRecipeName().equals(r2.getRecipeName()))
         {
-          addRecipeRow(r2.getRecipeID(), r2.getRecipeName());
-          recipeListPanel.add(Box.createVerticalStrut(5));
+          alreadyExists = true;
+          break;
         }
+      }
+      if (!alreadyExists)
+      {
+        addRecipeRow(r2.getRecipeID(), r2.getRecipeName());
+        recipeListPanel.add(Box.createVerticalStrut(5));
       }
     }
 
@@ -271,6 +296,18 @@ public class HomePageGUI extends JFrame implements ActionListener
     else if (command.equals("Favorites"))
     {
       displayRecipes(favDB.getFavorites(currentUserID));
+    }
+    else if (command.equals("Breakfast"))
+    {
+      displayRecipes(recipeDB.searchRecipeType("Breakfast", currentUserID));
+    }
+    else if (command.equals("Lunch"))
+    {
+      displayRecipes(recipeDB.searchRecipeType("Lunch", currentUserID));
+    }
+    else if (command.equals("Dinner"))
+    {
+      displayRecipes(recipeDB.searchRecipeType("Dinner", currentUserID));
     }
     else if (command.equals("Search"))
     {

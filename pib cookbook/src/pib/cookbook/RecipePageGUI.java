@@ -74,7 +74,8 @@ public class RecipePageGUI extends JFrame implements ActionListener
     //add info
     content.add(new JLabel("Description: " + recipe.getDescription()));
     content.add(new JLabel("Instructions: " + recipe.getInstructions()));
-    content.add(new JLabel("Cooking Time: " + recipe.getCookTime() + "minutes"));
+    content.add(new JLabel("Cooking Time: " + recipe.getCookTime() + " minutes"));
+    content.add(new JLabel("Meal Type: " + recipe.getMealType()));
 
     JLabel ingLabel = new JLabel("Ingredients:");
     ingLabel.setFont(new Font("SansSerif", Font.BOLD, 20));
@@ -96,8 +97,8 @@ public class RecipePageGUI extends JFrame implements ActionListener
     JLabel macLabel = new JLabel("Macros:");
     macLabel.setFont(new Font("SansSerif", Font.BOLD, 20));
     macLabel.setForeground(BROWN);
-    content.add(macLabel);
     content.add(Box.createVerticalStrut(20));
+    content.add(macLabel);
     
     double[] macros = new double[4];
     macros = riDB.calculateRecipeMacros(recipeID, userID);
