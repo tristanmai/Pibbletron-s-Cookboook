@@ -36,6 +36,7 @@ public class CreateRecipeGUI extends JFrame implements ActionListener
   private JButton breakfastButton;
   private JButton lunchButton;
   private JButton dinnerButton;
+  private JButton dessertButton;
 
   private JComboBox<Ingredient> ingredientDropdown;
   private JTextField weightField;
@@ -131,10 +132,12 @@ public class CreateRecipeGUI extends JFrame implements ActionListener
     breakfastButton = new JButton("Breakfast");
     lunchButton = new JButton("Lunch");
     dinnerButton = new JButton("Dinner");
+    dessertButton = new JButton("Dessert");
 
     breakfastButton.addActionListener(this);
     lunchButton.addActionListener(this);
     dinnerButton.addActionListener(this);
+    dessertButton.addActionListener(this);
 
     breakfastButton.setBackground(BEIGE_COLOR);
     breakfastButton.setForeground(BROWN);
@@ -142,11 +145,14 @@ public class CreateRecipeGUI extends JFrame implements ActionListener
     lunchButton.setForeground(BROWN);
     dinnerButton.setBackground(BEIGE_COLOR);
     dinnerButton.setForeground(BROWN);
+    dessertButton.setBackground(BEIGE_COLOR);
+    dessertButton.setForeground(BROWN);
 
     mealTypeRow.add(mealTypeLabel);
     mealTypeRow.add(breakfastButton);
     mealTypeRow.add(lunchButton);
     mealTypeRow.add(dinnerButton);
+    mealTypeRow.add(dessertButton);
 
     center.add(Box.createVerticalStrut(20));
     center.add(mealTypeRow);
@@ -214,6 +220,7 @@ public class CreateRecipeGUI extends JFrame implements ActionListener
     breakfastButton.setBorder(null);
     lunchButton.setBorder(null);
     dinnerButton.setBorder(null);
+    dessertButton.setBorder(null);
 
     //highlight the selected one
     selectedButton.setBorder(BorderFactory.createLineBorder(BROWN, 2));
@@ -264,6 +271,11 @@ public class CreateRecipeGUI extends JFrame implements ActionListener
     {
       mealType = "Dinner";
       highlightMeal(dinnerButton);
+    }
+    else if (command.equals("Dessert"))
+    {
+      mealType = "Dessert";
+      highlightMeal(dessertButton);
     }
     else if (command.equals("Add"))
     {

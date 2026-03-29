@@ -37,6 +37,7 @@ public class EditIngredientGUI extends JFrame implements ActionListener
     this.setLayout(new BorderLayout());
     
     this.currentUserID = userID;
+    this.ingredientID = ingredientID;
 
     JLabel background = new JLabel();
     background.setBackground(BEIGE_COLOR);

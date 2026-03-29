@@ -34,7 +34,7 @@ public class HomePageGUI extends JFrame implements ActionListener
   public HomePageGUI(int userID)
   {
     super("Recipe Book Home");
-    this.setBounds(410, 100, 640, 800);
+    this.setBounds(410, 100, 730, 800);
     this.setDefaultCloseOperation(EXIT_ON_CLOSE);
     this.setLayout(new BorderLayout());
 
@@ -59,7 +59,7 @@ public class HomePageGUI extends JFrame implements ActionListener
     logoutButton.addActionListener(this);
     logoutButton.setForeground(BROWN);
     logoutButton.setBackground(BEIGE_COLOR);
-    JLabel titleLabel = new JLabel("         Pib's Recipe Book");
+    JLabel titleLabel = new JLabel("              Pib's Recipe Book");
     titleLabel.setFont(new Font("SansSerif", Font.BOLD, 30));
     titleLabel.setForeground(BROWN);
 
@@ -98,6 +98,11 @@ public class HomePageGUI extends JFrame implements ActionListener
     dinnerSortButton.setForeground(BROWN);
     dinnerSortButton.setBackground(BEIGE_COLOR);
     dinnerSortButton.addActionListener(this);
+    
+    JButton dessertSortButton = new JButton("Dessert");
+    dessertSortButton.setForeground(BROWN);
+    dessertSortButton.setBackground(BEIGE_COLOR);
+    dessertSortButton.addActionListener(this);
 
     sortPanel.add(sortLabel);
     sortPanel.add(recentButton);
@@ -106,6 +111,7 @@ public class HomePageGUI extends JFrame implements ActionListener
     sortPanel.add(breakfastSortButton);
     sortPanel.add(lunchSortButton);
     sortPanel.add(dinnerSortButton);
+    sortPanel.add(dessertSortButton);
 
     //search
     JPanel searchPanel = new JPanel(new BorderLayout(7, 5));
@@ -308,6 +314,10 @@ public class HomePageGUI extends JFrame implements ActionListener
     else if (command.equals("Dinner"))
     {
       displayRecipes(recipeDB.searchRecipeType("Dinner", currentUserID));
+    }
+    else if (command.equals("Dessert"))
+    {
+      displayRecipes(recipeDB.searchRecipeType("Dessert", currentUserID));
     }
     else if (command.equals("Search"))
     {
