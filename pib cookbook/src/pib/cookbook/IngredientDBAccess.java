@@ -30,7 +30,7 @@ public class IngredientDBAccess
     }
     catch (SQLIntegrityConstraintViolationException e)//catches the exception that it already exists
     {
-      System.out.println("Ingredient already exists in this recipe.");
+      System.out.println("Ingredient already exists for this user.");
     }
     catch (SQLException e)
     {

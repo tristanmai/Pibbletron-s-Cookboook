@@ -117,7 +117,7 @@ public class DBManager
       //table for ingredients and their macros
       s.execute("CREATE TABLE IF NOT EXISTS Ingredient ("
         + "IngredientID INT AUTO_INCREMENT PRIMARY KEY, "
-        + "IngredientName VARCHAR(100) UNIQUE NOT NULL, "
+        + "IngredientName VARCHAR(100) NOT NULL, "
         + "ProteinPer100g DOUBLE, "
         + "CarbsPer100g DOUBLE, "
         + "FatsPer100g DOUBLE, "
