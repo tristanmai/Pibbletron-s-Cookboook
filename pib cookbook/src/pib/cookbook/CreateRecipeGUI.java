@@ -163,10 +163,10 @@ public class CreateRecipeGUI extends JFrame implements ActionListener
     recipeButton.setForeground(BROWN);
     recipeButton.setBackground(BEIGE_COLOR);
     recipeButton.addActionListener(this);
-    
+
     JPanel buttonPanel = new JPanel(new FlowLayout(FlowLayout.CENTER));
     buttonPanel.setOpaque(false);
-    
+
     buttonPanel.add(recipeButton);
     center.add(Box.createVerticalStrut(20));
     center.add(buttonPanel);

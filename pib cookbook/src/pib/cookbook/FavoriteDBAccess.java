@@ -10,7 +10,6 @@ public class FavoriteDBAccess
 {
   public void addFavorite(int userID, int recipeID)
   {
-    //using ignore in the insert into clause lets the program silently skip a duplicate favorite since double favoriting isnt a big issue that should be brought up to the user
     String sql = "INSERT INTO Favorite (UserID, RecipeID) VALUES (?, ?)";
     
     try (Connection conn = DBManager.getDBConnection();
