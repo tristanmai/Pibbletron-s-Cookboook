@@ -120,7 +120,7 @@ public class FavoriteDBAccess
       ps.setInt(2, recipeID);
       
       ResultSet rs = ps.executeQuery();
-      return rs.next(); //true is a row exists
+      return rs.next(); //true if a row exists
     }
     catch(SQLException e)
     {
