@@ -198,3 +198,4 @@ public class IngredientsListGUI extends JFrame implements ActionListener
     new IngredientsListGUI(5).setVisible(true);
   }
 }
+ 

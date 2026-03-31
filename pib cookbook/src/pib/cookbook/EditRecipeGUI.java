@@ -330,3 +330,4 @@ public class EditRecipeGUI extends JFrame implements ActionListener
     new EditRecipeGUI(7, 5).setVisible(true);
   }
 }
+ 
