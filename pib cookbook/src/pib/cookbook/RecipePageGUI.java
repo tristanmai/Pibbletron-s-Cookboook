@@ -129,3 +129,4 @@ public class RecipePageGUI extends JFrame implements ActionListener
     new RecipePageGUI(7, 5).setVisible(true);
   }
 }
+ 

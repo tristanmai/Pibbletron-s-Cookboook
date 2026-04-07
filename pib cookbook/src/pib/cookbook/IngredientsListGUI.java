@@ -103,12 +103,12 @@ public class IngredientsListGUI extends JFrame implements ActionListener
   {
     ingredientListPanel.removeAll();
 
-    //uses the addreciperow method to go thru all ingredient and add them all
+    //uses the addreciperow method to go through all ingredient and add them all
     for (Ingredient r : ingredients)
     {
       //add each row with correct arguemtns
       addIngredientRow(r.getIngredientID(), r.getIngredientName());
-      //add spaxing between rows
+      //add spacing between rows
       ingredientListPanel.add(Box.createVerticalStrut(5));
     }
 

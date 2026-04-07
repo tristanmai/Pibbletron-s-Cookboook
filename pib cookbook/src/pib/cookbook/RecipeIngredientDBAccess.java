@@ -31,7 +31,7 @@ public class RecipeIngredientDBAccess
     }
     catch (SQLException e)
     {
-      System.out.println("error inserting ingrediient into recipe");
+      System.out.println("error inserting ingredient into recipe");
       e.printStackTrace();
     }
   }

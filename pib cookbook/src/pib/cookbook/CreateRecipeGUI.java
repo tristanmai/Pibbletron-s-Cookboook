@@ -297,7 +297,10 @@ public class CreateRecipeGUI extends JFrame implements ActionListener
 
         double weight = Double.parseDouble(weightField.getText());
 
-        recipeIngredientDB.insertIngredientToRecipe(currentRecipeID, ing.getIngredientID(), weight);
+        recipeIngredientDB.insertIngredientToRecipe(
+          currentRecipeID,
+          ing.getIngredientID(),
+          weight);
 
         JOptionPane.showMessageDialog(null, "Ingredient added");
         weightField.setText("");

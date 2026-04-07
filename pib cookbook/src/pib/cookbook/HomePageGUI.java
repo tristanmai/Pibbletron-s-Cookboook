@@ -257,7 +257,6 @@ public class HomePageGUI extends JFrame implements ActionListener
   {
     recipeListPanel.removeAll();
 
-    //uses the addreciperow method to go thru all recipes and add them all
     for (Recipe r : recipes)
     {
       //add each row with correct arguemtns
@@ -283,7 +282,6 @@ public class HomePageGUI extends JFrame implements ActionListener
       }
     }
 
-    //updating the page
     recipeListPanel.revalidate();
     recipeListPanel.repaint();
   }

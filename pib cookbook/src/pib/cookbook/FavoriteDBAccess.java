@@ -142,3 +142,4 @@ public class FavoriteDBAccess
     favDB.viewFavorites(1);
   }
 }
+ 

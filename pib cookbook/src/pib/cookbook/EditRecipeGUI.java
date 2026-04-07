@@ -241,7 +241,7 @@ public class EditRecipeGUI extends JFrame implements ActionListener
 
   private void highlightMeal(JButton selectedButton)
   {
-    //reset all  da buttons
+    //reset all the buttons
     breakfastButton.setBorder(null);
     lunchButton.setBorder(null);
     dinnerButton.setBorder(null);
