@@ -254,7 +254,7 @@ public class CreateRecipeGUI extends JFrame implements ActionListener
       }
       catch (NumberFormatException ex)
       {
-        JOptionPane.showMessageDialog(null, "Cooking time has to be a number bruh.");
+        JOptionPane.showMessageDialog(null, "Cooking time has to be a number.");
       }
     }
     else if (command.equals("Breakfast"))

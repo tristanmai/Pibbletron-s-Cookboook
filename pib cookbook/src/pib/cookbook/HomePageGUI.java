@@ -98,7 +98,7 @@ public class HomePageGUI extends JFrame implements ActionListener
     dinnerSortButton.setForeground(BROWN);
     dinnerSortButton.setBackground(BEIGE_COLOR);
     dinnerSortButton.addActionListener(this);
-    
+
     JButton dessertSortButton = new JButton("Dessert");
     dessertSortButton.setForeground(BROWN);
     dessertSortButton.setBackground(BEIGE_COLOR);
@@ -186,30 +186,30 @@ public class HomePageGUI extends JFrame implements ActionListener
     recipeButtonsPanel.setBackground(BEIGE_COLOR);
 
     boolean isFav = favDB.isFavorite(currentUserID, recipeID);
+
+    JButton favButton;
     if (isFav)
     {
-      JButton favButton = new JButton("★");
-      favButton.setForeground(BROWN);
-      favButton.setBackground(BEIGE_COLOR);
-      favButton.setActionCommand("FAV_" + recipeID);
-      favButton.addActionListener(this);
-      recipeButtonsPanel.add(favButton);
+      favButton = new JButton("★");
     }
     else
     {
-      JButton favButton = new JButton("☆");
-      favButton.setForeground(BROWN);
-      favButton.setBackground(BEIGE_COLOR);
-      favButton.setActionCommand("FAV_" + recipeID);
-      favButton.addActionListener(this);
-      recipeButtonsPanel.add(favButton);
+      favButton = new JButton("☆");
     }
+    favButton.setForeground(BROWN);
+    favButton.setBackground(BEIGE_COLOR);
+    favButton.setActionCommand("FAV_" + recipeID);
+    favButton.addActionListener(this);
+    recipeButtonsPanel.add(favButton);
+    
     JButton editButton = new JButton("Edit");
     editButton.setForeground(BROWN);
     editButton.setBackground(BEIGE_COLOR);
+    
     JButton deleteButton = new JButton("Delete");
     deleteButton.setForeground(BROWN);
     deleteButton.setBackground(BEIGE_COLOR);
+    
     JButton shopButton = new JButton("Shopping List");
     shopButton.setForeground(BROWN);
     shopButton.setBackground(BEIGE_COLOR);
@@ -251,6 +251,7 @@ public class HomePageGUI extends JFrame implements ActionListener
     //updating the page
     recipeListPanel.revalidate();
     recipeListPanel.repaint();
+    System.out.println("Recipe recieved and outputted");
   }
 
   private void displayRecipes(ArrayList<Recipe> recipes, ArrayList<Recipe> recipes2)
@@ -284,6 +285,7 @@ public class HomePageGUI extends JFrame implements ActionListener
 
     recipeListPanel.revalidate();
     recipeListPanel.repaint();
+    System.out.println("Recipes combined and outputted.");
   }
 
   public void actionPerformed(ActionEvent e)
